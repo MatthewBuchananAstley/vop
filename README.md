@@ -12,5 +12,8 @@ Reasonably secure passwords!
 With shorter passwords the uppercase or lowercase letters are missing so they should be added manually.
 I have to program that, however passwords should be longer anyway.
 
-Adding some manual additional characters increases the security even farther.
+Adding some manual additional characters increases the password security even farther.
 
+usage:
+
+./otp_m.py 32 (64 characters max) 
