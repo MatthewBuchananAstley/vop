@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+#
+# 2022 Matthew Buchanan Astley
+#
 
 import os,sys
 import random 
