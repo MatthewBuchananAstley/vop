@@ -33,10 +33,11 @@ def rhsh(pwlen):
         pwlen = 64 
 
     a = random.SystemRandom("/dev/urandom")
-    a3 = a.random()
+    a3 = a.randbytes(777)
     b = str(a3)
-    c = b.split(".")
-    d = hashlib.sha256(c[1].encode()).hexdigest()
+    #print("JAa",b)
+    #c = b.split(".")
+    d = hashlib.sha256(b.encode()).hexdigest()
     d1 = d[0:int(pwlen)] 
     return(d1)
 
@@ -49,16 +50,14 @@ def b64enc(a3):
         except TypeError:
             return(a3)
 
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-pwl', '--password_length')
     parser.add_argument('-b64', '--urlsafe_encode')
     args = parser.parse_args()
 
-    print("Ja",args.password_length)
-    print("Ja",args.urlsafe_encode)
+    #print("Ja",args.password_length)
+    #print("Ja",args.urlsafe_encode)
     pwlen = args.password_length
     process_opts(pwlen)
 
@@ -66,7 +65,6 @@ if __name__ == '__main__':
 
     if len(a) == 64:
         a2 = a[0:len(a) -1]
-        a2 += str(otp_t.rspec_char()) 
         a3 = otp_t.rd(a2)
         print(b64enc(a3))
     else:
