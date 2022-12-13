@@ -13,4 +13,4 @@ Adding some manual additional characters increases the password security even fa
 
 usage:
 
-./otp_m.py 32 (64 characters max) 
+./otp_m.py -pwl 64 (64 characters max) 
