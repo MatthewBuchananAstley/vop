@@ -9,8 +9,6 @@ What would the sweet voice of pinoccio or pinocchia provide?
 
 Reasonably secure passwords!
 
-Adding some manual additional characters increases the password security even farther.
-
 usage:
 
 ./otp_m.py -pwl 64 (64 characters max) 
