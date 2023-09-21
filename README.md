@@ -1,3 +1,7 @@
+[![OpenSSF Scorecard]
+(htt‌ps://api.securityscorecards.dev/projects/github.com/MatthewBuchananAstley/vop/badge)]
+(htt‌ps://securityscorecards.dev/viewer/?uri=github.com/MatthewBuchananAstley/vop)
+
 # vop
 
 The voice of pinocchio (or pinocchia if you want)
