@@ -10,7 +10,10 @@ import random
 
 def rspec_char():
     a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
-    return(a[random.randint(0,len(a) -1 )])
+    #return(a[random.randint(0,len(a) -1 )])
+    a1 = random.SystemRandom("/dev/urandom")
+    #return(a[os.random.randint(0,len(a) -1 )])
+    return(a[a1.randint(0,len(a) -1 )])
 
 def ct():
     a1 = [ 1,1,1,1,1,2,2,2,2,2 ] 
