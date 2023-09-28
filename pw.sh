@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# 2022 Matthew Buchanan Astley
+# 2022, 2023 Matthew Buchanan Astley
 # To generate a bunch of passwords 
 
 
