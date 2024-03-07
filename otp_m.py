@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 #
 # SPDX-License-Identifier: Apache-2.0
-# FileCopyrightText: <text> 2022, 2023 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
+# FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
 #    
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,10 +28,12 @@ def process_opts(a):
     try:
         pwlen = a 
         if int(pwlen) < 8:
+            print("usage: otp_m.py [-h] [-pwl PASSWORD_LENGTH] [-b64 URLSAFE_ENCODE]")
             print("Minimum 8 characters, please\n")
             sys.exit()
          
     except TypeError:
+        print("usage: otp_m.py [-h] [-pwl PASSWORD_LENGTH] [-b64 URLSAFE_ENCODE]")
         print("Please input pw length\n")
         sys.exit()
 
@@ -65,10 +67,10 @@ if __name__ == '__main__':
     parser.add_argument('-pwl', '--password_length')
     parser.add_argument('-b64', '--urlsafe_encode')
     args = parser.parse_args()
-
     pwlen = args.password_length
-    process_opts(pwlen)
 
+    process_opts(pwlen)
+    
     a = rhsh(int(pwlen))
 
     if len(a) == 64:
