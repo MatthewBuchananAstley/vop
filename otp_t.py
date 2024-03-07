@@ -1,18 +1,26 @@
 #!/usr/bin/python3
 #
-# 2022 Matthew Buchanan Astley
+# SPDX-License-Identifier: Apache-2.0
+# FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastleygmail.com, matthewbuchanan astley.nl) </text>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
 
 import os,sys
 import random
 
-#a = "thevoiceofpinocchio"
-#a = sys.argv[1]
-
 def rspec_char():
     a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
-    #return(a[random.randint(0,len(a) -1 )])
     a1 = random.SystemRandom("/dev/urandom")
-    #return(a[os.random.randint(0,len(a) -1 )])
     return(a[a1.randint(0,len(a) -1 )])
 
 def ct():
@@ -27,10 +35,9 @@ def gchr(a):
     a2 = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M', 'N', 'O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
     a8 = [ 0,1,2,3,4,5,6,7,8,9 ]
 
-    a4 = random.SystemRandom("/dev/random")
+    a4 = random.SystemRandom("/dev/urandom")
     a4.shuffle(a2)
-    #print("jaAa",a)
-    #print("jaA",a2)
+
     a7 = [] 
     for a3 in a:
         if a3 in a1:
@@ -38,7 +45,6 @@ def gchr(a):
         elif int(a3) in a8:
             a7.append(str(a8[a4.randint(0,len(a8) -1)]))
             
-    #print("JAAA",a7) 
     return(''.join(a7))
 
 def pprlwr(a):
@@ -59,8 +65,7 @@ def pprlwr(a):
             a2 += 1
     
     a4 = random.SystemRandom("/dev/urandom")
-    #print("Jaa",a3) 
-    #print("JAa",a2) 
+    
     if a2 == 0:
         a1[a4.randint(0,len(a1) -1)] = a5[a4.randint(0,len(a5) -1)]
 
@@ -77,12 +82,11 @@ def rd(a):
 
     a = gchr(a)
     a = pprlwr(a)
-    #print("JAaA",a)
-
 
     a2 = [] 
 
     a6 = random.SystemRandom("/dev/urandom")
+
     for i in a:
         a2.append(a6.randint(0,len(a) - 1))
 
