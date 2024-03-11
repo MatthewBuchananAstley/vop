@@ -17,11 +17,12 @@
 
 import os,sys
 import random 
+#import secrets
 import hashlib
 import otp_t
 import argparse
 import base64
-
+import pwt
 
 def process_opts(a):
 
@@ -46,7 +47,9 @@ def rhsh(pwlen):
     if pwlen >= 64:
         pwlen = 64 
 
-    a = random.SystemRandom("/dev/urandom")
+
+    # SystemRandom 1: 777 bytes
+    a = secrets.SystemRandom("/dev/urandom")
     a3 = a.randbytes(777)
     b = str(a3)
     d = hashlib.sha256(b.encode()).hexdigest()
@@ -76,7 +79,9 @@ if __name__ == '__main__':
     if len(a) == 64:
         a2 = a[0:len(a) -1]
         a3 = otp_t.rd(a2)
-        print(b64enc(a3))
+        #print(b64enc(a3))
+        print(b64enc(pwt.apw(a3)))
     else:
         a3 = otp_t.rd(a)
-        print(b64enc(a3))
+        #print(b64enc(a3))
+        print(b64enc(pwt.apw(a3)))

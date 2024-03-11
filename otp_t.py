@@ -20,13 +20,17 @@ import random
 
 def rspec_char():
     a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
+    # SystemRandom 2: 7 bytes
     a1 = random.SystemRandom("/dev/urandom")
+    # Characters: 15 possible characters
     return(a[a1.randint(0,len(a) -1 )])
 
 def ct():
     a1 = [ 1,1,1,1,1,2,2,2,2,2 ] 
+    # SystemRandom 3: 7 bytes
     a = random.SystemRandom("/dev/urandom")
     a.shuffle(a1)
+    # Chars: possible characters 2
     a2 = a.randint(0,len(a1) - 1)
     return(a1[a2])
 
@@ -35,16 +39,20 @@ def gchr(a):
     a2 = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M', 'N', 'O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
     a8 = [ 0,1,2,3,4,5,6,7,8,9 ]
 
+    # SystemRandom 4: 7 bytes
     a4 = random.SystemRandom("/dev/urandom")
     a4.shuffle(a2)
 
     a7 = [] 
     for a3 in a:
         if a3 in a1:
+            #print("JaaaaaA", a4.randint(0,len(a2) -1)) 
+            # Chars: possible characters 52 
             a7.append(str(a2[a4.randint(0,len(a2) -1)]))
         elif int(a3) in a8:
+            #print("JAaaaaA", a4.randint(0,len(a2) -1)) 
+            # Chars: possible characters 10 
             a7.append(str(a8[a4.randint(0,len(a8) -1)]))
-            
     return(''.join(a7))
 
 def pprlwr(a):
@@ -63,9 +71,10 @@ def pprlwr(a):
             a3 += 1
         elif ii.islower():
             a2 += 1
-    
+    # SystemRandom 5: 7 bytes 
     a4 = random.SystemRandom("/dev/urandom")
     
+    # Chars: possible positions = length of password, possible characters = 26  
     if a2 == 0:
         a1[a4.randint(0,len(a1) -1)] = a5[a4.randint(0,len(a5) -1)]
 
@@ -85,6 +94,7 @@ def rd(a):
 
     a2 = [] 
 
+    # SystemRandom 6: 7 bytes
     a6 = random.SystemRandom("/dev/urandom")
 
     for i in a:
@@ -102,6 +112,7 @@ def rd(a):
         else:
             a3.append(str(a[i]))
 
+    # SystemRandom 7: 7 bytes
     a7 = random.SystemRandom("/dev/urandom")
     a7.shuffle(a3)
     

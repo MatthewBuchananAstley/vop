@@ -1,4 +1,19 @@
 #!/usr/bin/python
+#
+# SPDX-License-Identifier: Apache-2.0
+# FileCopyrightText: <text> 2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
+#    
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
 
 import os,sys
 import fileinput
@@ -29,11 +44,13 @@ def chkspchr(a):
 def rtrnlu(a):
     a4 = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' ]
     a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
+    # SystemRandom 8: 7 bytes
     a2 = random.SystemRandom("/dev/urandom")
     #a3 = a2.randint(0,len(a) - 1)
     a3 = a2.randint(0,len(a4) - 1)
     #print("jAAA", a3)
-   
+  
+    # Chars: possible characters 26 
     if a == "lower":
         return(a4[a3])
 
@@ -43,7 +60,8 @@ def rtrnlu(a):
 class rtrnlU:
     #a2 = random.SystemRandom("/dev/urandom")
     #a3 = a2.randint(0,26)
- 
+
+    # SystemRandom 9: 7 bytes 
     def upperR():
         a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
         a2 = random.SystemRandom("/dev/urandom")
@@ -116,6 +134,7 @@ def apw(a):
     if 'upper' in a4:
         a4.remove("upper")
 
+    # SystemRandom 10: 7 bytes 
     a5 = random.SystemRandom("/dev/urandom")
 
     #print("JaAaA", a4)
