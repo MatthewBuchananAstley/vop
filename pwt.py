@@ -17,7 +17,8 @@
 
 import os,sys
 import fileinput
-import random
+#import random
+import secrets 
 
 #a = sys.argv[1]
 
@@ -45,7 +46,8 @@ def rtrnlu(a):
     a4 = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' ]
     a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
     # SystemRandom 8: 7 bytes
-    a2 = random.SystemRandom("/dev/urandom")
+    #a2 = random.SystemRandom("/dev/urandom")
+    a2 = secrets.SystemRandom("/dev/urandom")
     #a3 = a2.randint(0,len(a) - 1)
     a3 = a2.randint(0,len(a4) - 1)
     #print("jAAA", a3)
@@ -64,12 +66,14 @@ class rtrnlU:
     # SystemRandom 9: 7 bytes 
     def upperR():
         a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
-        a2 = random.SystemRandom("/dev/urandom")
+        #a2 = random.SystemRandom("/dev/urandom")
+        a2 = secrets.SystemRandom("/dev/urandom")
         a3 = a2.randint(0,25)
         return(a1[a3])
  
     def lowerR():
-        a2 = random.SystemRandom("/dev/urandom")
+        #a2 = random.SystemRandom("/dev/urandom")
+        a2 = secrets.SystemRandom("/dev/urandom")
         a3 = a2.randint(0,25)
         a4 = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' ]
         return(a4[a3])
@@ -117,13 +121,13 @@ def apw(a):
     for i in a4:
         if i == "lower":
         #    a4.remove(i)
-            print("JaAaa lower 1", a4)
+        #    print("JaAaa lower 1", a4)
             #a4.append(rtrnlu("lower"))
             a4.append(rtrnlU.lowerR())
 #            print("JaAaa lower 2", a4)
         if i == "upper":
         #    a4.remove(i)
-            print("JaAaaA upper 1", a4)
+        #    print("JaAaaA upper 1", a4)
             #a4.append(rtrnlu("upper"))
             a4.append(rtrnlU.upperR())
 #            print("JaAaaA upper 2", a4)
@@ -135,7 +139,8 @@ def apw(a):
         a4.remove("upper")
 
     # SystemRandom 10: 7 bytes 
-    a5 = random.SystemRandom("/dev/urandom")
+    #a5 = random.SystemRandom("/dev/urandom")
+    a5 = secrets.SystemRandom("/dev/urandom")
 
     #print("JaAaA", a4)
     a5.shuffle(a4)
