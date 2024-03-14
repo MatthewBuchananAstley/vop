@@ -16,8 +16,8 @@
 # limitations under the License
 
 import os,sys
-import random 
-#import secrets
+#import random 
+import secrets
 import hashlib
 import otp_t
 import argparse

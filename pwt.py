@@ -103,9 +103,9 @@ def apw(a):
     a3 = [ "upper", "lower", "special", "numbers" ] 
     a4 = [] 
 
-    print("JaaA", a1) 
+#    print("JaaA", a1) 
     for e in a3:
-        print("JaAa", e) 
+#        print("JaAa", e) 
         if len(a1[e]) == 0:
             #print("jaA", a1[e] + " None")
             a4.append(e) 
@@ -113,22 +113,22 @@ def apw(a):
         for ee in a1[e]:
             a4.append(ee)
 
-    print("JaA", a4)
+#    print("JaA", a4)
     for i in a4:
         if i == "lower":
         #    a4.remove(i)
             print("JaAaa lower 1", a4)
             #a4.append(rtrnlu("lower"))
             a4.append(rtrnlU.lowerR())
-            print("JaAaa lower 2", a4)
+#            print("JaAaa lower 2", a4)
         if i == "upper":
         #    a4.remove(i)
             print("JaAaaA upper 1", a4)
             #a4.append(rtrnlu("upper"))
             a4.append(rtrnlU.upperR())
-            print("JaAaaA upper 2", a4)
+#            print("JaAaaA upper 2", a4)
       
-    print("JAAA", a4)
+#    print("JAAA", a4)
     if 'lower' in a4: 
         a4.remove("lower")
     if 'upper' in a4:
