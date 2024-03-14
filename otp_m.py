@@ -1,25 +1,40 @@
 #!/usr/bin/python3
 #
-# 2022 Matthew Buchanan Astley
+# SPDX-License-Identifier: Apache-2.0
+# FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
+#    
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
 
 import os,sys
-import random 
+#import random 
+import secrets
 import hashlib
 import otp_t
 import argparse
 import base64
-
+import pwt
 
 def process_opts(a):
 
     try:
         pwlen = a 
         if int(pwlen) < 8:
+            print("usage: otp_m.py [-h] [-pwl PASSWORD_LENGTH] [-b64 URLSAFE_ENCODE]")
             print("Minimum 8 characters, please\n")
             sys.exit()
          
-    except IndexError:
+    except TypeError:
+        print("usage: otp_m.py [-h] [-pwl PASSWORD_LENGTH] [-b64 URLSAFE_ENCODE]")
         print("Please input pw length\n")
         sys.exit()
 
@@ -32,11 +47,11 @@ def rhsh(pwlen):
     if pwlen >= 64:
         pwlen = 64 
 
-    a = random.SystemRandom("/dev/urandom")
+
+    # SystemRandom 1: 777 bytes
+    a = secrets.SystemRandom("/dev/urandom")
     a3 = a.randbytes(777)
     b = str(a3)
-    #print("JAa",b)
-    #c = b.split(".")
     d = hashlib.sha256(b.encode()).hexdigest()
     d1 = d[0:int(pwlen)] 
     return(d1)
@@ -55,18 +70,18 @@ if __name__ == '__main__':
     parser.add_argument('-pwl', '--password_length')
     parser.add_argument('-b64', '--urlsafe_encode')
     args = parser.parse_args()
-
-    #print("Ja",args.password_length)
-    #print("Ja",args.urlsafe_encode)
     pwlen = args.password_length
-    process_opts(pwlen)
 
+    process_opts(pwlen)
+    
     a = rhsh(int(pwlen))
 
     if len(a) == 64:
         a2 = a[0:len(a) -1]
         a3 = otp_t.rd(a2)
-        print(b64enc(a3))
+        #print(b64enc(a3))
+        print(b64enc(pwt.apw(a3)))
     else:
         a3 = otp_t.rd(a)
-        print(b64enc(a3))
+        #print(b64enc(a3))
+        print(b64enc(pwt.apw(a3)))
