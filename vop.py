@@ -106,8 +106,8 @@ def apw(a):
 
     a6 = sorted(a5.values())
              
-    print("JaAAaAaAAA", a5)     
-    print("JAAAaAAA", a6)
+    #print("JaAAaAaAAA", a5)     
+    #print("JAAAaAAA", a6)
 
     a7 = [] 
     for iii in a5.keys():
@@ -115,7 +115,7 @@ def apw(a):
     #          print("jaaaA", iii, a5[iii])
               a7.append(iii)
     
-    print("jaAaa", a7) 
+    #print("jaAaa", a7) 
         
     for e in a3:
         #print("JaAa", e) 
@@ -124,24 +124,24 @@ def apw(a):
         for ee in a1[e]:
             a4.append(ee)
 
-    print("JaA", a4)
+    #print("JaA", a4)
     #a4.pop() 
 
     for i in a4:
         if i == "lower":
             a4.append(rtrnlU.lowerR())
             #a4.pop()
-            print("JaAaa lower 2", a4)
+     #       print("JaAaa lower 2", a4)
         if i == "upper":
             a4.append(rtrnlU.upperR())
             #a4.pop()
-            print("JaAaaA upper 2", a4)
+      #      print("JaAaaA upper 2", a4)
         if i == "numbers":
             a4.append(rtrnlU.numbersR())
             #a4.pop()
-            print("JaaAAAA numbers 3", a4)
+       #     print("JaaAAAA numbers 3", a4)
       
-    print("JAAA", a4)
+    #print("JAAA", a4)
 
     if 'lower' in a4: 
         a4.remove("lower")
@@ -153,10 +153,10 @@ def apw(a):
     # SystemRandom 10: 7 bytes 
     a8 = secrets.SystemRandom("/dev/urandom")
 
-    print("JaAaA", a4)
+    #print("JaAaA", a4)
 
     a8.shuffle(a4)
-    print("JaaAAa", a4)   
+    #print("JaaAAa", a4)   
      
     return(''.join(a4)) 
 
