@@ -30,8 +30,6 @@ def prpw(a):
     for i in a:
         a1.append(i)
     
-    #a1 = a.split()
-    #print("JA",a1)
     return(a1)
 
 def chknum(a):
