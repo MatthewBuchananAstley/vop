@@ -15,7 +15,7 @@ And those consist of at least one uppercase, one lowercase letter and one specia
 
 usage:
 
-./otp_m.py -pwl 64 (64 characters max) 
+./vop.py -pwl 64 (64 characters max) 
 
 The pw.sh script produces a list of between one and a hundred passwords from which a password can be chosen:
 
@@ -23,4 +23,4 @@ The pw.sh script produces a list of between one and a hundred passwords from whi
 
 The password can also be changed into an url friendly base64 string.
 
-./otp_m.py -pwl 64 -b64 1
+./vop.py -pwl 64 -b64 1
