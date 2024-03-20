@@ -16,14 +16,19 @@ class TestPwMethods(unittest.TestCase):
         a = self.getpw()
         uc_cnt = 0
         lc_cnt = 0 
+        sc_cnt = 0
 
         for i in a:
             if i.isupper() == True:
-                 uc_cnt += 1 
+                uc_cnt += 1 
 
         for i in a:
             if i.islower() == True:
-                 lc_cnt += 1
+                lc_cnt += 1
+
+        for i in a:
+            if vop.chkspchr(i) == True:
+                sc_cnt += 1 
 
         err = {}
 
@@ -50,7 +55,13 @@ class TestPwMethods(unittest.TestCase):
         else:
             err["lc_err"] += 1
 
-       
+        err["sc_err"] = 0
+
+        if sc_cnt >= 1:
+            print("Ja", sc_cnt, " ", a)
+        else:
+            err["sc_err"] += 1
+             
         for i in err.keys():
             if err[i] == 0:
                 print("PASS")
