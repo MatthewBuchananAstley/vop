@@ -1,0 +1,126 @@
+SPDXVersion: SPDX-2.2
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: vop-1.2.spdx
+DocumentNamespace: https://github.com/MatthewBuchananAstley/vop.git
+Creator: Person: Matthew Buchanan Astley (matthewbuchanan@astley.nl)
+Created: 2024-03-21T00:58:43Z
+CreatorComment: Vop spdx file
+
+#
+#
+
+PackageName: vop-1.2
+SPDXID: SPDXRef-MatthewBuchananAstley-Package-vop-1.2
+PackageVersion: 1.2
+PackageVerificationCode: 5f13ff12fddb678c3809b6c177ed07b653194039 (./vop-1.2.spdx excluded )
+PackageLicenseDeclared: Apache-2.0
+PackageLicenseInfoFromFiles: Apache-2.0
+PackageLicenseConcluded: Apache-2.0
+PackageCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley how to make this work do you think? gmail.com, matthewbuchanan and this? astley.nl) </text>
+PackageDownloadLocation: https://github.com/MatthewBuchananAstley/vop.git
+
+#
+#
+#
+
+FileName: ./COPYRIGHT.md
+SPDXID: SPDXRef-COPYRIGHT.md
+FileType: TEXT
+FileChecksum: SHA256: 028e288c121c07b33dc36b2a6c1674373752c83dd01d94325f05077855ef0b2a
+FileChecksum: SHA1: 53629d8cdb0a88d4d3d6ec664f3ef895e31ff611
+FileCopyrightText: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseConcluded: NOASSERTION
+
+#
+#
+#
+
+FileName: ./LICENCE.md
+SPDXID: SPDXRef-LICENCE.md
+FileType: TEXT
+FileChecksum: SHA256: 5228cdd1e10f251cfb4e1644f341e88c204129e8a2c64573c256d448cb6504ad
+FileChecksum: SHA1: ad293edcef14301858616a5ee8facf367c13463b
+FileCopyrightText: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseConcluded: NOASSERTION
+
+#
+#
+#
+
+FileName: ./SECURITY.md
+SPDXID: SPDXRef-SECURITY.md
+FileType: TEXT
+FileChecksum: SHA256: 6abfdf6d1add5adc58472cecb110924c9c70ed4a61ba018f9f8b0526ffbdc818
+FileChecksum: SHA1: 4d7077cce822914d4ce6e61f69c511c924f8bec8
+FileCopyrightText: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseConcluded: NOASSERTION
+
+#
+#
+#
+
+FileName: ./README.md
+SPDXID: SPDXRef-README.md
+FileType: TEXT
+FileChecksum: SHA256: e4b1df065a7a412ee928d71b2705df646255c6b23554375e4a86bc364c3028ec
+FileChecksum: SHA1: fd58b85e7ead949511df60a4206d8d64e4a477ae
+FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley how to make this work do you think? gmail.com, matthewbuchanan and this? astley.nl) </text>
+LicenseInfoInFile: NOASSERTION
+LicenseConcluded: NOASSERTION
+
+#
+#
+#
+
+FileName: ./pw.sh
+SPDXID: SPDXRef-pw.sh
+FileType: APPLICATION
+FileChecksum: SHA256: 0c973ee5b9bb6a36ba5f0fe2fe38278f89a5cf674e19618e1daf49d7d35e9c9f
+FileChecksum: SHA1: da498e5b39de9d60c7a6b09759e641f135d99cab
+FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley how to make this work do you think? gmail.com, matthewbuchanan and this? astley.nl) </text>
+LicenseInfoInFile: Apache-2.0
+LicenseConcluded: Apache-2.0
+
+#
+#
+#
+
+FileName: ./CHANGELOG
+SPDXID: SPDXRef-CHANGELOG
+FileType: TEXT
+FileChecksum: SHA256: 493aa66d89445e87867884d467518cf88adf40f0180e49c66c8e499692f3e6af
+FileChecksum: SHA1: 11ad8d93dc08a589db2ac4ec179d4b10dbfe58f9
+FileCopyrightText: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+LicenseConcluded: NOASSERTION
+
+#
+#
+#
+
+FileName: ./testpw.py
+SPDXID: SPDXRef-testpw.py
+FileType: APPLICATION
+FileChecksum: SHA256: f1fe17ff53be6c5b1076df39b4ef9b20cad126c8672d876d4d46fd9ecc6cd8d8
+FileChecksum: SHA1: 0386ce008a5a57663a1fa3ab6f644d5bc5808c1d
+FileCopyrightText: <text> 2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
+LicenseInfoInFile: Apache-2.0
+LicenseConcluded: Apache-2.0
+
+#
+#
+#
+
+FileName: ./vop.py
+SPDXID: SPDXRef-vop.py
+FileType: APPLICATION
+FileChecksum: SHA256: 655b6fc28921c851a69a39ce298aca77a61c4340b256c3653f6d5d497107759a
+FileChecksum: SHA1: b012ce9c977d2498d9429e0c6794a0fd88a6589c
+FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
+LicenseInfoInFile: Apache-2.0
+LicenseConcluded: Apache-2.0
+
