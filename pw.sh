@@ -11,5 +11,5 @@
 
 for i in `seq 1 $(shuf -n 1  -i 1-100)`
     do 
-       ./vop.py -pwl 64
+       ./vop -pwl 64
 done 
