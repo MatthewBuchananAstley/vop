@@ -3,25 +3,22 @@
 
 # vop
 
-The voice of pinocchio (or pinocchia if you want)
+The voice of pinocchio (pinocchia)
 
-"password generator"
+A password generator.
 
-You can now have "The voice of pinocchio or pinocchia" on your computer!
-What would the sweet voice of pinoccio or pinocchia provide?
+Reasonably secure modern passwords can be generated with this software.
 
-Reasonably secure passwords!
+Modern passwords have to be (preferably) a random sequence of characters, of sufficient length and should consist of at least one uppercase, one lowercase letter and one special character.
 
-And those consist of at least one uppercase, one lowercase letter and one special character.
+Usage:
 
-usage:
-
-./vop.py -pwl 64 (64 characters max) 
+./vop -pwl 64 (64 characters max) 
 
 The pw.sh script produces a list of between one and a hundred passwords from which a password can be chosen:
 
-./pw.sh 
+./pw 
 
 The password can also be changed into an url friendly base64 string.
 
-./vop.py -pwl 64 -b64 1
+./vop -pwl 64 -b64 1
