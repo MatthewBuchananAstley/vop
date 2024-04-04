@@ -9,6 +9,24 @@
   grade: stable # must be 'stable' to release into candidate/stable channels
   confinement: devmode # use 'strict' once you have the right plugs and slots
 
+  #layout:
+  #  /usr/bin/vop:
+  #    bind: $SNAP/vop  
+  #  /usr/bin/pw:
+  #    bind: $SNAP/pw
+  #  /usr/local/share/vop-1.2/README.md:  
+  #    bind: $SNAP/README.md
+  #  /usr/local/share/vop-1.2/LICENCE.md:  
+  #    bind: $SNAP/LICENCE.md
+  #  /usr/local/share/vop-1.2/SECURITY.md:  
+  #    bind: $SNAP/SECURITY.md
+  #  /usr/local/share/vop-1.2/CHANGELOG:  
+  #    bind: $SNAP/CHANGELOG
+  #  /usr/local/share/vop-1.2/COPYRIGHT.md:  
+  #    bind: $SNAP/COPYRIGHT.md
+  #  /usr/local/share/vop-1.2/CONTRIBUTING.md:  
+  #    bind: $SNAP/CONTRIBUTING.md
+
   parts:
     my-part:
       # See 'snapcraft plugins'
