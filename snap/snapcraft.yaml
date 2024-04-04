@@ -1,0 +1,15 @@
+  name: voiceofpino # The "vop" name seems to be a reserved name and voiceofpinocchioorpinocchia quite long
+  version: '1.2' 
+  summary: Create modern passwords with the voiceofpino
+  description: |
+    Modern passwords need at least one lowercase, one uppercase letter and one special character.
+    For additional security a script "pw" is provided which generates a list of passwords from which a password can be chosen. 
+    Occasionally, under 64 characters, it provides an extra character.
+
+  grade: stable # must be 'stable' to release into candidate/stable channels
+  confinement: devmode # use 'strict' once you have the right plugs and slots
+
+  parts:
+    my-part:
+      # See 'snapcraft plugins'
+      plugin: nil
