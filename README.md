@@ -3,7 +3,7 @@
 
 # vop
 
-The voice of pinocchio (pinocchia)
+The voice of pino ( or pinocchio (pinocchia))
 
 A password generator.
 
