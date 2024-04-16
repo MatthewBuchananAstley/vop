@@ -13,6 +13,8 @@ Modern passwords have to be (preferably) a random sequence of characters, of suf
 
 # Installation
 
+The application can be installed via the git clone command:
+
     $git clone https://github.comm/MatthewBuchananAstley/vop.git
 
 Or with the great snap software distribution system:
@@ -23,7 +25,7 @@ Or with the great snap software distribution system:
 
     ./vop -pwl 64 (64 characters max) 
 
-The pw.sh script produces a list of between one and a hundred passwords from which a password can be chosen:
+The pw script produces a list of between one and a hundred passwords from which a password can be chosen:
 
     ./pw 
 
