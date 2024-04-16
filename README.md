@@ -11,14 +11,24 @@ Reasonably secure modern passwords can be generated with this software.
 
 Modern passwords have to be (preferably) a random sequence of characters, of sufficient length and should consist of at least one uppercase, one lowercase letter and one special character.
 
-Usage:
+# Installation
 
-./vop -pwl 64 (64 characters max) 
+    $git clone https://github.comm/MatthewBuchananAstley/vop.git
+
+Or with the great snap software distribution system:
+
+    $snap install --devmode --edge voiceofpino
+
+# Usage:
+
+    ./vop -pwl 64 (64 characters max) 
 
 The pw.sh script produces a list of between one and a hundred passwords from which a password can be chosen:
 
-./pw 
+    ./pw 
 
-The password can also be changed into an url friendly base64 string.
+# Other uses
 
-./vop -pwl 64 -b64 1
+The password can also be changed into an url friendly base64 string which might be handy to prepend a code to publicly accessible files on webservers.
+
+    ./vop -pwl 64 -b64 1
