@@ -2,11 +2,11 @@
 
 ## Supported Versions
 
-vop 1.1 is the latest supported version.
+vop 1.2.0 is the latest supported version.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.2   | :white_check_mark: |
+| 1.2.0   | :white_check_mark: |
 | 1.1   | :x: |
 | 1.0   | :x:                |
 
