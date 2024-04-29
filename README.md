@@ -3,8 +3,6 @@
 
 # vop
 
-The voice of pino ( or pinocchio (pinocchia))
-
 A password generator.
 
 Reasonably secure modern passwords can be generated with this software.
