@@ -1,0 +1,134 @@
+#!/usr/bin/python
+#
+# vop-1.3.0 
+# FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
+#
+
+import os,sys
+import secrets,base64
+import argparse
+
+class chstr():
+
+    def array_for_shuffle(self):
+        a = []
+        for i in self:
+            a.append(i)
+        return(a)
+
+    def shuffle_pw(self):
+        a1 = secrets.SystemRandom("/dev/urandom")
+        a1.shuffle(self)
+        return(''.join(self))
+
+    def rspec_char():
+        a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
+        # SystemRandom 2: 7 bytes
+        a1 = secrets.SystemRandom("/dev/urandom")
+        # Characters: 15 possible characters
+        return(a[a1.randint(0,len(a) -1 )])
+
+    # SystemRandom 9: 7 bytes
+    def upperR():
+        a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
+        a2 = secrets.SystemRandom("/dev/urandom")
+        a3 = a2.randint(0,25)
+        return(a1[a3])
+
+    def lowerR():
+        a2 = secrets.SystemRandom("/dev/urandom")
+        a3 = a2.randint(0,25)
+        a4 = [ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z' ]
+        return(a4[a3])
+
+    def numbersR():
+        a2 = secrets.SystemRandom("/dev/urandom")
+        a3 = a2.randint(0,9)
+        a4 = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
+        return(a4[a3])
+
+
+    def rhsh(self):
+        # SystemRandom 1: 777 bytes
+        a = secrets.SystemRandom("/dev/urandom")
+        #a3 = a.randbytes(777)
+        a3 = a.randbytes(round((int(self)/777)*777))
+        b = str(a3)
+        d = base64.urlsafe_b64encode(bytes(b, encoding='UTF-8'))
+        #print("ja ",d,len(d) - 3)
+        #d4 = a.randint(0,((len(b) - 1) - int(self)))
+        d4 = a.randint(0,((len(d) - 1) - int(self)))
+        d5 = d4 + int(self)
+        d1 = str(d[d4:d5]).lstrip('\'b').rstrip('\'')
+        d1_2 = chstr.array_for_shuffle(d1)
+        a.shuffle(d1_2) 
+        d1_3 = ''.join(d1_2) 
+        d1_1 = d1_3[2:len(d1) -1]
+        return(d1_2)
+ 
+    def prstr(self):
+        a_1 = { "upper" : [], "lower" : [], "number" : [] } 
+
+        for i in self:
+            if i.isupper():
+                a_1["upper"].append(i)
+            elif i.islower():
+                a_1["lower"].append(i)
+            elif i.isalnum():
+                a_1["number"].append(i)
+ 
+        a4 = { "upper" :  len(a_1["upper"]), "lower" : len(a_1["lower"]), "number" : len(a_1["number"]) }
+        a5 = int()
+        
+        a6 = []
+
+        for i in a4.keys():
+             a6.append(a4[i]) 
+             #print("Ja", i, a4[i])
+             a5 += a4[i] 
+        
+        a6.sort()
+
+        #print("JaaAa", a6)
+ 
+        #if int(a5) < int(self[1]):
+        #    print("Ja adjust", a5, "!=", self[1])
+       
+         
+        if a4["upper"] == 0:
+            a_1["upper"].append(chstr.upperR())
+        if a4["lower"] == 0:
+            a_1["lower"].append(chstr.lowerR())
+        if a4["number"] == 0:
+            a_1["upper"].pop()
+            a_1["upper"][-1] = chstr.rspec_char()
+            a_1["number"].append(chstr.numbersR())
+        else: 
+            a_1["upper"][-1] = chstr.rspec_char()
+        
+   
+        print("Jaa", a4)
+
+        a7 = [] 
+        for i in a4.keys():
+            for ii in a_1[i]:
+                a7.append(ii)
+  
+        return(chstr.shuffle_pw(a7))        
+
+    def vop(self):
+        a = chstr.rhsh(int(self)) 
+        a1 = chstr.prstr(a) 
+        return(a1)
+        
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('Password_Length', metavar='Password Length', nargs=1, type=int, help='int')
+    parser.add_argument('Base64_Encoding', metavar='Base64 Enconding', nargs='?', const='False', type=int, help='1')
+    args = parser.parse_args()
+
+    pwlen = args.Password_Length[0]
+
+    a = chstr.vop(int(pwlen))
+    print(a)
