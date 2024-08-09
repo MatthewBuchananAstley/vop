@@ -2,11 +2,12 @@
 
 ## Supported Versions
 
-vop 1.2.0 is the latest supported version.
+vop 1.3.0 is the latest supported version.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.2.0   | :white_check_mark: |
+| 1.3.0   | :white_check_mark: |
+| 1.2.0   | :x: |
 | 1.1   | :x: |
 | 1.0   | :x:                |
 
@@ -19,11 +20,7 @@ To report a security matter you can:
 
 Or email me at:
 
-mbastley communication wise how one would make this work gmailperiod com
+mbastley@gmail.com
 
-Or send me a message on the networking site for professionals. I'll try to fix a reported bug or declare the bug a feature asap and equally send update messages if circumstances permit.
-
-
-
-
+Another option is to send me a message on the networking site for professionals. I will try to fix a reported bug or declare the bug a feature as soon as possible and send update messages. The frequency of the update messages depends on the circumstances.
 

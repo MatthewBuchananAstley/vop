@@ -5,7 +5,7 @@
 
 A password generator.
 
-Reasonably secure modern passwords can be generated with this software.
+With this software, reasonably secure modern passwords can be generated.
 
 Modern passwords have to be (preferably) a random sequence of characters, of sufficient length and should consist of at least one uppercase, one lowercase letter and one special character.
 
@@ -21,14 +21,18 @@ Or with the great snap software distribution system:
 
 # Usage:
 
-    ./vop -pwl 64 (64 characters max) 
+    ./vop 64 
 
-The pw script produces a list of between one and a hundred passwords from which a password can be chosen:
+The password length be an arbitrarily large number, however keep in mind that passwordfields in many cms databases are constrained to a certain amount of characters.
 
-    ./pw 
+# Combining fractions of passwords from a list of generated passwords into a new password.
 
-# Other uses
+The pw script produces a list of between one and a hundred passwords from which a password can be chosen or combined into a new password with some added manual typing for extra security:
+
+    ./pw 100 
+
+# Other uses 
 
 The password can also be changed into an url friendly base64 string which might be handy to prepend a code to publicly accessible files on webservers.
 
-    ./vop -pwl 64 -b64 1
+    ./vop 64 1
