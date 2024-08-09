@@ -2,25 +2,32 @@
 
 # vop
 
-The voice of pinocchio (or pinocchia if you want)
+A password generator.
 
-"password generator"
+Reasonably secure modern passwords can be generated with this software.
 
-You can now have "The voice of pinocchio or pinocchia" on your computer!
-What would the sweet voice of pinoccio or pinocchia provide?
+Modern passwords have to be (preferably) a random sequence of characters, of sufficient length and should consist of at least one uppercase, one lowercase letter and one special character.
 
-Reasonably secure passwords!
+# Installation
 
-And those consist of at least one uppercase, one lowercase letter and one special character.
+The application can be installed via the git clone command:
 
-usage:
+    $git clone https://github.comm/MatthewBuchananAstley/vop.git
 
-./vop.py -pwl 64 (64 characters max) 
+Or with the great snap software distribution system:
 
-The pw.sh script produces a list of between one and a hundred passwords from which a password can be chosen:
+    $snap install --devmode --edge voiceofpino
 
-./pw.sh 
+# Usage:
 
-The password can also be changed into an url friendly base64 string.
+    ./vop -pwl 64 (64 characters max) 
 
-./vop.py -pwl 64 -b64 1
+The pw script produces a list of between one and a hundred passwords from which a password can be chosen:
+
+    ./pw 
+
+# Other uses
+
+The password can also be changed into an url friendly base64 string which might be handy to prepend a code to publicly accessible files on webservers.
+
+    ./vop -pwl 64 -b64 1
