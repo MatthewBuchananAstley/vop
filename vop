@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
 # vop-1.3.0 
-# FileCopyrightText: <text> 2022-2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
+# FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
 # Script to generate passwords with at least one lowercase, one uppercase letter and one special character.
 # The password can be base64 encoded if needed. 
 
