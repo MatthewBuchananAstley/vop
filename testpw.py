@@ -1,7 +1,7 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 #
 # SPDX-License-Identifier: Apache-2.0
-# FileCopyrightText: <text> 2024 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
+# FileCopyrightText: <text> 2024 - 2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
 #    
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
