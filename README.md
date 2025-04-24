@@ -15,10 +15,6 @@ The application can be installed via the git clone command:
 
     $git clone https://github.comm/MatthewBuchananAstley/vop.git
 
-Or with the great snap software distribution system:
-
-    $snap install --devmode --edge voiceofpino
-
 # Usage:
 
     ./vop 64 
@@ -33,6 +29,6 @@ The pw script produces a list of between one and a hundred passwords from which 
 
 # Other uses 
 
-The password can also be changed into an url friendly base64 string which might be handy to prepend a code to publicly accessible files on webservers.
+The password can also be changed into an url friendly base64 string and prepended to publicly accessible files on webservers.
 
     ./vop 64 1
