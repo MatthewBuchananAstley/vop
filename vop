@@ -27,6 +27,8 @@ class chstr():
         a1 = secrets.SystemRandom("/dev/urandom")
         return(a[a1.randint(0,len(a) -1 )])
 
+     
+
     def upperR():
         a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
         a2 = secrets.SystemRandom("/dev/urandom")
@@ -44,7 +46,6 @@ class chstr():
         a3 = a2.randint(0,9)
         a4 = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
         return(a4[a3])
-
 
     def rhsh(self):
         a = secrets.SystemRandom("/dev/urandom")
@@ -83,24 +84,54 @@ class chstr():
         
         a6.sort()
 
+        # If one of the values in a6 is zero, one character must be subtracted from one of the others and added to the one that is zero
+        # Additionally make sure at 4 characters the string consists of one l,u,n,sp character
+        
+
+        #print("Jaa", a4)
+        #print("JAAAaaA", a_1)
+        #print("JAAAa", len(a6), a6)
+        
         if a4["upper"] == 0:
             a_1["upper"].append(chstr.upperR())
         if a4["lower"] == 0:
             a_1["lower"].append(chstr.lowerR())
-        if a4["number"] == 0:
+        if a4["number"] == 0 and a4["upper"] > 1 :
             a_1["upper"].pop()
             a_1["upper"][-1] = chstr.rspec_char()
             a_1["number"].append(chstr.numbersR())
-        else: 
-            a_1["upper"][-1] = chstr.rspec_char()
+
+        # Commenting out this else statement from the control loop fixes the intermittent returning of one character less.
+        ##else:
+        
+        #print("JAAAA", a_1)
+
+        a_1["upper"][-1] = chstr.rspec_char()
+        
+        #
+        # Check if there is a uc/lc/dgt array with more than 1 character to replace one character for a special character.
+        # This adds more special characters if other arrays are > 1 :| 
+        ##a_1_1 = a_1.keys()
+        ##for i in a_1_1:
+        ##    if len(a_1[i]) > 1:
+        ##        a_1[i][-1] = chstr.rspec_char()
         
         #print("Jaa", a4)
+        #print("Jaa", len(a4), a4)
 
         a7 = [] 
         for i in a4.keys():
             for ii in a_1[i]:
                 a7.append(ii)
-  
+
+        #print("jAaa", self, len(a7), a7)
+
+        if len(a7) != len(self):
+            #print("JaAAa", len(a7), len(self))
+            for i in range(0,(len(self) - len(a7))):
+                a7.append(chstr.numbersR())
+        
+   
         return(chstr.shuffle_pw(a7))        
 
     def vop(self):
@@ -120,4 +151,5 @@ if __name__ == '__main__':
          a1 = str(a)
          print(a1[2:len(a1)-1].strip('=_'))
     else:
-         print(chstr.vop(int(pwlen)))
+         #print(chstr.vop(int(pwlen)))
+         print(len(chstr.vop(int(pwlen))), chstr.vop(int(pwlen)))
