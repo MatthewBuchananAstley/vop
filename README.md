@@ -40,7 +40,7 @@ The password can also be changed into an url friendly base64 string and prepende
     ./vop 64 1
 
 Keep in mind that the larger the character number is, the higher the demands on your computer hardware. 
-That means to get a larger password it will take longer for a result to arrive on your screen. 
+This means with larger passwords it will take longer for a result to arrive on your screen. 
 
     time ./vop 1000000
     real	0m25.980s
