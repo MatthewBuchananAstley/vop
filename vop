@@ -1,15 +1,24 @@
 #!/usr/bin/python
 #
-# vop-1.3.0 
 # FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
-# Script to generate passwords with at least one lowercase, one uppercase letter and one special character.
+# Version: 1.4.0 
+# Script to generate passwords with at least one lowercase, one uppercase letter and one special character or more.
 # The password can be base64 encoded if needed. 
 
 import os,sys
 import secrets,base64
 import argparse
+import logging
 
 class chstr():
+
+    logging.basicConfig(
+        filename='vop_1.log',
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+  
+    )
+
 
     def array_for_shuffle(self):
         a = []
@@ -26,8 +35,6 @@ class chstr():
         a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
         a1 = secrets.SystemRandom("/dev/urandom")
         return(a[a1.randint(0,len(a) -1 )])
-
-     
 
     def upperR():
         a1 = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' ]
@@ -49,91 +56,109 @@ class chstr():
 
     def rhsh(self):
         a = secrets.SystemRandom("/dev/urandom")
-        a3 = a.randbytes(round((int(self)/777)*777))
+        # Veel random bytes
+        a3 = a.randbytes(int(self)*777)
+        # Maak er een string van
         b = str(a3)
-        d = base64.urlsafe_b64encode(bytes(b, encoding='UTF-8'))
-        d4 = a.randint(0,((len(d) - 1) - int(self)))
+        # Base64 encode zonder rare karakters
+        d = base64.urlsafe_b64encode(bytes(b, encoding='UTF-8')).decode()
+        #logging.info("len b64 pw: " + str(len(d)))
+        # Een random int om een willekeurige startpuntindex binnen de string d te hebben
+        d4 = a.randint(0,((len(d)-1) - int(self)))
+        #logging.info("Pw startindex: " + str(d4))
+        # De eindindex van de passwordstring 
         d5 = d4 + int(self)
-        d1 = str(d[d4:d5]).lstrip('\'b').rstrip('\'')
-        d1_2 = chstr.array_for_shuffle(d1)
-        a.shuffle(d1_2) 
-        d1_3 = ''.join(d1_2) 
-        d1_1 = d1_3[2:len(d1) -1]
-        return(d1_2)
+        #logging.info("Eindindex: " + str(d5))
+        #d1 = str(d[d4:d5]).lstrip('\'b').rstrip('\'')  # Dit was het probleem van het verdwijnende karakter :|. Ok so this strips a regular b from the string. Use bytes.decode()
+        d1 = str(d[d4:d5])
+        #logging.info("Pw selectie: " + str(d1))
+
+        return(d1)
+
+    def a_pop(self):
+            for i in range(0,int(self[1])):
+                self[0].pop()
+            return(self[0])
+ 
+    def a_range(self):
+            a = []
+            for i in range(0,self[1]):
+                a.append(self[0][i])
+            return(a)
+  
+    def c_spec(self):
+            if self in [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']:
+                return True 
+
+    def sprinkle_special_characters_on_the_password(self):
+            a1 = secrets.SystemRandom("/dev/urandom")
+            a4 = []
+            for iiii in self[0]:
+                a4.append(iiii)
+
+            a6 = []
+
+            for i in range(0,self[1]):
+                a6.append(a1.randint(0,len(self[0])-1))
+
+            logging.info("Aantal randint: "+ str(a6))
+            a6.pop()
+
+            logging.info("Aantal randint na pop: "+ str(a6))
+
+            for i in a6:
+                a4[i] = chstr.rspec_char()
+            
+            a7 = []  
+            for i in a4: 
+                if chstr.c_spec(i) == True:
+                    a7.append(i) 
+
+            logging.info("pw "+ ''.join(a4))
+            logging.info("spec c "+ str(len(a7)) + " " + str(a7))
+            
+            
+            return(''.join(a4))   
  
     def prstr(self):
-        a_1 = { "upper" : [], "lower" : [], "number" : [] } 
 
-        for i in self:
-            if i.isupper():
-                a_1["upper"].append(i)
-            elif i.islower():
-                a_1["lower"].append(i)
-            elif i.isalnum():
-                a_1["number"].append(i)
- 
-        a4 = { "upper" :  len(a_1["upper"]), "lower" : len(a_1["lower"]), "number" : len(a_1["number"]) }
-        a5 = int()
-        
-        a6 = []
+        a8 = [ chstr.upperR(), chstr.lowerR(), chstr.numbersR(), chstr.rspec_char() ]
+        a9 = [ chstr.upperR(), chstr.lowerR(), chstr.numbersR() ]
 
-        for i in a4.keys():
-             a6.append(a4[i]) 
-             #print("Ja", i, a4[i])
-             a5 += a4[i] 
-        
-        a6.sort()
+        a17 = []
 
-        # If one of the values in a6 is zero, one character must be subtracted from one of the others and added to the one that is zero
-        # Additionally make sure at 4 characters the string consists of one l,u,n,sp character
-        
+        # Shuffle the default characters array
+        a18 = secrets.SystemRandom("/dev/urandom")
+        a18.shuffle(a8) 
 
-        #print("Jaa", a4)
-        #print("JAAAaaA", a_1)
-        #print("JAAAa", len(a6), a6)
-        
-        if a4["upper"] == 0:
-            a_1["upper"].append(chstr.upperR())
-        if a4["lower"] == 0:
-            a_1["lower"].append(chstr.lowerR())
-        if a4["number"] == 0 and a4["upper"] > 1 :
-            a_1["upper"].pop()
-            a_1["upper"][-1] = chstr.rspec_char()
-            a_1["number"].append(chstr.numbersR())
-
-        # Commenting out this else statement from the control loop fixes the intermittent returning of one character less.
-        ##else:
-        
-        #print("JAAAA", a_1)
-
-        a_1["upper"][-1] = chstr.rspec_char()
-        
         #
-        # Check if there is a uc/lc/dgt array with more than 1 character to replace one character for a special character.
-        # This adds more special characters if other arrays are > 1 :| 
-        ##a_1_1 = a_1.keys()
-        ##for i in a_1_1:
-        ##    if len(a_1[i]) > 1:
-        ##        a_1[i][-1] = chstr.rspec_char()
-        
-        #print("Jaa", a4)
-        #print("Jaa", len(a4), a4)
+        # For 1,2,3 characters randomly choose characters 
+ 
+        if len(self) == 1: 
+            a17_1 = a18.randint(0,3)
+            a17 = a8[a17_1] 
+        elif len(self) == 2:
+            a17_1 = a18.randint(0,3)
+            a17_2 = a18.randint(0,3)
+            a17 = [ str(a8[a17_1]), str(a8[a17_2]) ]
+        elif len(self) == 3:
+            a17_1 = a18.randint(0,3)
+            a17_2 = a18.randint(0,3)
+            a17_3 = a18.randint(0,3)
+            a17 = [ str(a8[a17_1]), str(a8[a17_2]), str(a8[a17_3]) ]
+        else:
+            for i in range(0,(len(self) -4)):
+                a17.append(self[i])
 
-        a7 = [] 
-        for i in a4.keys():
-            for ii in a_1[i]:
-                a7.append(ii)
+            for i in a8:
+                a17.append(i)
 
-        #print("jAaa", self, len(a7), a7)
+        for i in enumerate(a8):
+            a = a18.randint(0,len(a17)-1)
+            a17 
 
-        if len(a7) != len(self):
-            #print("JaAAa", len(a7), len(self))
-            for i in range(0,(len(self) - len(a7))):
-                a7.append(chstr.numbersR())
-        
-   
-        return(chstr.shuffle_pw(a7))        
-
+        return(chstr.shuffle_pw(a17))    
+ 
     def vop(self):
         return(chstr.prstr(chstr.rhsh(int(self))))
         
@@ -141,15 +166,19 @@ class chstr():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('Password_Length', metavar='Password Length', nargs=1, type=int, help='int')
+    parser.add_argument('-s', nargs='?', const='False', type=int, help='Add more special characters'  )
     parser.add_argument('Base64_Encoding', metavar='Base64 Encoding', nargs='?', const='False', type=int, help='1')
     args = parser.parse_args()
 
     pwlen = args.Password_Length[0]
-
     if args.Base64_Encoding == 1:
          a = base64.urlsafe_b64encode(bytes(chstr.vop(int(pwlen)),encoding='utf-8'))
          a1 = str(a)
+         # Remove base64 characters 
          print(a1[2:len(a1)-1].strip('=_'))
+    elif args.s:
+         a = chstr.vop(int(pwlen))
+         a1 = chstr.sprinkle_special_characters_on_the_password([a, args.s])
+         print(a1) 
     else:
-         #print(chstr.vop(int(pwlen)))
-         print(len(chstr.vop(int(pwlen))), chstr.vop(int(pwlen)))
+         print(chstr.vop(int(pwlen)))
