@@ -17,15 +17,12 @@
 
 import os,sys
 import unittest
-import vop 
+import vop
 
 
 class TestPwMethods(unittest.TestCase):
 
     def getpw(self):
-        #a = vop.rhsh(int(10))
-        #a1 = vop.rd(a)
-        #return(vop.apw(a1))
         return(vop.chstr.prstr(vop.chstr.rhsh(int(10))))
 
     def chkspchr(self):
