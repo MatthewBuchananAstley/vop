@@ -35,15 +35,71 @@ Say no more. Adding more special characters is now possible using the -s flag.
 
 # Other uses 
 
-The password can also be changed into an url friendly base64 string and prepended to publicly accessible files on webservers.
+The password can also be changed into an url friendly base64 string to prepend to a publicly accessible file on a webserver.
 
     ./vop 64 1
 
-Keep in mind that the larger the character number is, the higher the demands on your computer hardware. 
-This means with larger passwords it will take longer for a result to arrive on your screen. 
+# Not enough special characters?
 
-    time ./vop 1000000
-    real	0m25.980s
-    user	0m20.280s
-    sys	0m5.494s
+Here you go, you can use t3 to use the full character set. 
 
+    ./t3 1000
+
+This may cause strange behaviour in other tools such as incorrect character counts, see wc as an example.
+
+# Testing entropy of the passwords 
+
+At first glance the t3 results have more entropy, however some tests have a problem with the character set.
+
+The following tests can be used to check for entropy
+
+    Character_Distribution.py 
+    Chi-square_test.py
+    Kolmogorov-Smirnov-test.py
+    shannon_entropy.py
+    
+# Checking the quantum safety of your password
+
+A password consisting of 256 bits of entropy is needed to be safe against brute force attacks on your password using quantum computers.
+
+    Character Set Size	Bits/Char	Length for 256 bits
+    256 (random bytes)	8		32 characters
+    192			7.57		~33.8 characters
+    128			7		~36.6 characters
+    95 (printable ASCII)6.57		~39.0 characters
+    62 (A–Z, a–z, 0–9)	5.95		~43.0 characters
+
+Using vop:
+
+    A minimum password of 39 characters gives ~256 bits of entropy which is sufficient for quantum safety at 128-bit* level 
+
+Using t3:
+
+    A minimum password of 32 characters gives ~256 bits of entropy which is sufficient for quantum safety at 128-bit* level   
+
+You can check the quantum safety of your passwords with Character_Distribution.py:
+
+    ./Character_Distribution.py 
+
+    Character distribution:
+    ...
+    Î: 1 (1.00%)
+    B: 1 (1.00%)
+    -: 2 (2.00%)
+    ¤: 1 (1.00%)
+    K: 2 (2.00%)
+    S: 1 (1.00%)
+    ...
+
+    Nu­»Õçj(´~ÉîÈ¶³Û}ä£8¸ÍÑXÜôìÒVsY2°}¶á×AÕ²uü4æh¿a,4!áoâÄ+Ì~Oí¸*Ó§Âà\ÝOÂdý=éñc¶¿ìÑ¶Ë;aÆ³+èÉ>mÎBì-¤KS-Kà
+
+
+    Shannon Entropy: 6.1563 bits per character 
+
+    GREAT QUANTUM SAFE PASSWORD!
+   
+
+    Total Entropy: 615.6307 bits (for 100 characters)
+
+* 128 bit level means 2^128 operations which means that it takes so many attempts to crack the password that it will take quantum computers trillions of years
+  
