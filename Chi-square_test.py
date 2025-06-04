@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
+#
+# Chi square test
 
 import sys
 from collections import Counter
 from scipy.stats import chisquare
 
+# Your password
 pw = sys.argv[1]
 
+# Count character frequencies
 counts = Counter(pw)
-expected = [len(pw) / len(counts)] * len(counts)
+
+# Observed counts (e.g., 'x': 6, '4': 5, ...)
 observed = list(counts.values())
 
-stat, p_value = chisquare(observed, expected)
-print(f"Chi-square: {stat:.2f}, p-value: {p_value:.4f}")
+# Expected: all characters occur equally
+expected = [sum(observed) / len(observed)] * len(observed)
+
+# Chi-square test
+stat, p_value = chisquare(f_obs=observed, f_exp=expected)
+
+print(f"Chi-square statistic: {stat:.2f} p-value: {p_value:.4f}")
