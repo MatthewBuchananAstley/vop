@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
 # FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
 # Version: 1.4.0 
@@ -32,7 +32,9 @@ class chstr():
         return(''.join(self))
 
     def rspec_char():
-        a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
+        #a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
+        #a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|',':',';','>','<' ]
+        a = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '-', '=', '[', ']', '{', '}', '|', ';', ':', "'", ',', '.', '<', '>', '/', '?', '`', '~'] 
         a1 = secrets.SystemRandom("/dev/urandom")
         return(a[a1.randint(0,len(a) -1 )])
 
