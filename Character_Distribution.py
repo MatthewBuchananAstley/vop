@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # Checker to check quantum safety of passwords, using shannon entropy check
 #
