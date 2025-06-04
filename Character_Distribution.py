@@ -41,5 +41,5 @@ if __name__ == "__main__":
        print("PASSWORD NOT QUANTOM SAFE!\n\n", f"Total Entropy: {entropy * len(password):.4f} bits (for {len(password)} characters)\n")
     else:
        print(f"Shannon Entropy: {entropy:.4f} bits per character", "\n")
-       print("GREAT QUANTUM SAFE PASSWORD!\n\n", f"Total Entropy: {entropy * len(password):.4f} bits (for {len(password)} characters)\n")
+       print("QUANTUM SAFE PASSWORD!\n\n", f"Total Entropy: {entropy * len(password):.4f} bits (for {len(password)} characters)\n")
 
