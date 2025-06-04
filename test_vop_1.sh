@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Script to test if the pw string contains the required amount of characters
+
 
 rfile=$(date '+%Y%m%d%H%M%S')
 pwl=$1
@@ -9,6 +12,8 @@ if [ -z $pwl ] ; then
 fi
 
 function cleanr() {
+    #
+    # On sigint (ctrl c) symlink to the latest results file
     echo "SIGINT!" 
     if [ -e latest_vop_1_results.txt ] ; then
         rm latest_vop_1_results.txt 
@@ -18,6 +23,7 @@ function cleanr() {
 }
 
 trap cleanr SIGINT
+
 
 while true ; 
     do 
