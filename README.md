@@ -62,6 +62,8 @@ The following tests can be used to check for entropy
 
 A password consisting of 256 bits of entropy is needed to be safe against brute force attacks on your password using quantum computers.
 
+ACCORDING TO ChatGPT:
+
     Character Set Size	Bits/Char	Length for 256 bits
     256 (random bytes)	8		32 characters
     192			7.57		~33.8 characters
@@ -69,13 +71,11 @@ A password consisting of 256 bits of entropy is needed to be safe against brute 
     95 (printable ASCII)6.57		~39.0 characters
     62 (A–Z, a–z, 0–9)	5.95		~43.0 characters
 
-When using vop then a minimum password of 39 characters gives ~256 bits of entropy which is sufficient for quantum safety at 128-bit* level:
-
-When using t3 a minimum password of 32 characters gives ~256 bits of entropy which is sufficient for quantum safety at 128-bit* level
+However in reality ./t3.py 48 gives enough entropy, that is to reach at least 256 bits, and for ./vop the threshold seems 57 characters to consistently generate a quantum safe password. 
 
 You can check the quantum safety of your passwords with Character_Distribution.py:
 
-    ./Character_Distribution.py 
+    ./Character_Distribution.py $(./t3 100) or $(./vop 100) or your own password
 
     Character distribution:
     ...
