@@ -71,7 +71,7 @@ ACCORDING TO ChatGPT:
     95 (printable ASCII)6.57		~39.0 characters
     62 (A–Z, a–z, 0–9)	5.95		~43.0 characters
 
-However in reality ./t3.py 48 gives enough entropy, that is to reach at least 256 bits, and for ./vop the threshold seems 57 characters to consistently generate a quantum safe password. 
+However in reality ./t3.py 48 gives enough entropy, that is to reach at least 256 bits, and for ./vop the threshold seems 57 characters to consistently generate a quantum safe password. In other words try generating the password a few times if the test reports an insufficient amount of entropy. 
 
 You can check the quantum safety of your passwords with Character_Distribution.py:
 
