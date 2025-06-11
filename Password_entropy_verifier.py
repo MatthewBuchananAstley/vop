@@ -35,10 +35,11 @@ if __name__ == "__main__":
     character_distribution(password)
     print("\n")
     print(password)
+    print(entropy)
     print("\n")
     if (entropy * len(password)) < 256:
        print(f"Shannon Entropy: {entropy:.4f} bits per character", "\n")
-       print("PASSWORD NOT QUANTOM SAFE!\n\n", f"Total Entropy: {entropy * len(password):.4f} bits (for {len(password)} characters)\n")
+       print("PASSWORD NOT QUANTUM SAFE!\n\n", f"Total Entropy: {entropy * len(password):.4f} bits (for {len(password)} characters)\n")
     else:
        print(f"Shannon Entropy: {entropy:.4f} bits per character", "\n")
        print("QUANTUM SAFE PASSWORD!\n\n", f"Total Entropy: {entropy * len(password):.4f} bits (for {len(password)} characters)\n")
