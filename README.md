@@ -46,6 +46,9 @@ Here you go, you can use t3 to use the full character set.
     ./t3 1000
 
 This may cause strange behaviour in other tools such as incorrect character counts, see wc as an example.
+If you want a correct character count use 
+
+    ./t3 100 | python -c 'import sys; a = sys.stdin.read() ; print(len(a))'
 
 # Testing entropy of the passwords 
 
@@ -53,7 +56,7 @@ At first glance the t3 results have more entropy, however some tests have a prob
 
 The following tests can be used to check for entropy
 
-    Character_Distribution.py 
+    Password_entropy_verifier.py 
     Chi-square_test.py
     Kolmogorov-Smirnov-test.py
     shannon_entropy.py
@@ -73,9 +76,9 @@ ACCORDING TO ChatGPT:
 
 However in reality ./t3.py 48 gives enough entropy, that is to reach at least 256 bits, and for ./vop the threshold seems 57 characters to consistently generate a quantum safe password. In other words try generating the password a few times if the test reports an insufficient amount of entropy. 
 
-You can check the quantum safety of your passwords with Character_Distribution.py:
+You can check the quantum safety of your passwords with Password_entropy_verifier.py:
 
-    ./Character_Distribution.py $(./t3 100) or $(./vop 100) or your own password
+    ./Password_entropy_verifier.py $(./t3 100) or $(./vop 100) or your own password
 
     Character distribution:
     ...
@@ -92,7 +95,7 @@ You can check the quantum safety of your passwords with Character_Distribution.p
 
     Shannon Entropy: 6.1563 bits per character 
 
-    GREAT QUANTUM SAFE PASSWORD!
+    QUANTUM SAFE PASSWORD!
    
 
     Total Entropy: 615.6307 bits (for 100 characters)
