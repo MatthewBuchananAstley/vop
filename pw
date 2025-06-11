@@ -8,18 +8,44 @@
 #
 
 
+
 function prw { 
 
-  for i in `seq 1 $(shuf -n 1  -i 1-100)`
-    do 
-       ./vop $pwl ;
-    done 
+  if [ $tool == 'vops' ] ; then
+      for i in `seq 1 $(shuf -n 1  -i 1-100)`
+        do
+          ./vop -s $pwl $len ;
+        done
+  else
+      for i in `seq 1 $(shuf -n 1  -i 1-100)`
+        do 
+          ./$tool $pwl ;
+        done 
+  fi
 
 }
 
-if [ -n "$1" ] ; then
-    pwl=$1 
-    prw pwl
-else
-    echo "Please provide a number"
+if [ -z $1 ] || [ -z $2 ] ; then
+    echo "Please provide a tool and a number"
+    exit 1
 fi
+
+tool=$1
+pwl=$2 
+len=$3
+
+case $tool in 
+    vop)
+       prw $tool $pwl
+    ;; 
+    t3)
+       prw $tool $pwl
+    ;; 
+    vops)
+       prw $tool $len $pwl
+       
+esac
+        
+
+
+
