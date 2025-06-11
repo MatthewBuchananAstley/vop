@@ -1,6 +1,8 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/MatthewBuchananAstley/vop/badge)](https://securityscorecards.dev/viewer/?uri=github.com/MatthewBuchananAstley/vop)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8697/badge)](https://www.bestpractices.dev/projects/8697)
 
+![VOP - Quantum Safe Passwords](media/vop-quantum-safe-passwords.png)
+
 # vop
 
 A password generator.
