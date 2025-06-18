@@ -23,8 +23,6 @@ jobs:
       # --- NEW STEP TO CREATE THE SOURCE TARBALL ---
       - name: Create Source Tarball
         run: |
-         - name: Create Source Tarball
-        run: |
           # The directory that contains your repository's content
           # After actions/checkout, your repo is in /home/runner/work/YOUR_REPO_NAME/YOUR_REPO_NAME
           # We want to tar up the second YOUR_REPO_NAME directory.
