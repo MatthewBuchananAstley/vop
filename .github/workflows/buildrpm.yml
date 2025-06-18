@@ -80,8 +80,6 @@ jobs:
           
         id: create_tarball # Assign an ID to this step to reference its output
         
-        id: create_tarball # Assign an ID to this step to reference its output
-        
       - name: Build RPM package
         id: rpm_build # ID to reference its outputs
         uses: naveenrajm7/rpmbuild@master # Check this action's outputs and stability
