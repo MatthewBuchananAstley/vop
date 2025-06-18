@@ -23,8 +23,6 @@ jobs:
       # --- NEW STEP TO CREATE THE SOURCE TARBALL ---
       - name: Create Source Tarball
         run: |
-         - name: Create Source Tarball
-        run: |
           # Get the repository name (e.g., 'vop' from 'MatthewBuchananAstley/vop')
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
           # Get the tag name without 'refs/tags/' prefix (e.g., 'v1.0.0' or 'main')
