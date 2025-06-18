@@ -85,6 +85,13 @@ jobs:
         uses: naveenrajm7/rpmbuild@master # Check this action's outputs and stability
         with:
           spec_file: "vop.spec" # Assumes vop.spec is in the repository root
+          
+      - name: Debug RPM Build Outputs
+        run: |
+          echo "Source RPM Path: ${{ steps.rpm_build.outputs.source_rpm_path }}"
+          echo "Binary RPM Path: ${{ steps.rpm_build.outputs.rpm_path }}"
+          # Add any other outputs you find in the action's docs
+          # You might need to look for common outputs like 'rpm_name', 'source_rpm_name', etc.
 
       - name: Create Release and Upload Assets
         uses: softprops/action-gh-release@v2 # Standard action for releases and asset uploads
