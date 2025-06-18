@@ -23,23 +23,49 @@ jobs:
       # --- NEW STEP TO CREATE THE SOURCE TARBALL ---
       - name: Create Source Tarball
         run: |
-          # Get the repository name (e.g., 'vop' from 'your-org/vop')
+         - name: Create Source Tarball
+        run: |
+          # The directory that contains your repository's content
+          # After actions/checkout, your repo is in /home/runner/work/YOUR_REPO_NAME/YOUR_REPO_NAME
+          # We want to tar up the second YOUR_REPO_NAME directory.
+
+          # Get the repository name (e.g., 'vop' from 'MatthewBuchananAstley/vop')
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
           # Get the tag name without 'refs/tags/' prefix (e.g., 'v1.0.0')
           TAG_NAME="${{ github.ref_name }}"
 
           # Define the desired tarball filename
-          # Using REPO_NAME and TAG_NAME makes it dynamic and standard
           TARBALL_NAME="${REPO_NAME}-${TAG_NAME}.tar.gz"
 
-          # Create the tarball from the current directory (which is /github/workspace)
-          # --exclude=.git* to not include git metadata
-          # -C . to change to current directory (./) before archiving, so path is clean
-          tar -czf "$TARBALL_NAME" --exclude='.git' --exclude='.github' --exclude='node_modules' .
+          # Define the source directory to tar (the actual root of your checked out repo)
+          # This is typically the GITHUB_WORKSPACE environment variable
+          SOURCE_DIR="${{ github.workspace }}"
+
+          # Navigate to the parent directory to safely create the tarball
+          # We assume the current directory when this step starts is /github/workspace
+          # So we'll create the tarball IN /github/workspace for easy access later,
+          # but we'll tar the contents of the *cloned repository*, not the workspace itself.
+
+          # IMPORTANT: Check if the cloned repository root is indeed /github/workspace
+          # actions/checkout@v4 places the repo content directly in /github/workspace
+          # So, we'll tar the *contents* of /github/workspace into a new tarball
+          # but we need to ensure the tarball itself isn't included in the archive.
+
+          # Let's adjust the tar command slightly.
+          # We still want the tarball created in /github/workspace
+          # but we'll tell tar to operate on a copy or a specific set of files.
+
+          # A safer way to create the tarball from the workspace content:
+          # Use -C to change directory *before* processing, but keep output in $PWD
+          # This ensures tar is not trying to archive the output file itself
+          # if the output location is within the source tree it's archiving.
+          tar -czf "$TARBALL_NAME" --exclude='.git' --exclude='.github' --exclude='node_modules' -C "$SOURCE_DIR" .
 
           echo "Generated tarball: $TARBALL_NAME"
-          # Store the tarball name as an output for the next step
-          echo "TARBALL_PATH=$PWD/$TARBALL_NAME" >> $GITHUB_OUTPUT
+          # Store the tarball path. Since it's created in $PWD, which is /github/workspace,
+          # its path will be /github/workspace/TARBALL_NAME
+          echo "TARBALL_PATH=$SOURCE_DIR/$TARBALL_NAME" >> $GITHUB_OUTPUT
+        
         id: create_tarball # Assign an ID to this step to reference its output
         
       - name: Build RPM package
