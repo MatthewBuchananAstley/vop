@@ -1,49 +1,46 @@
 on:
-    push:
-      # Sequence of patterns matched against refs/tags
-      tags:
-        - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
-  
-name: Create RPM Release
+  push:
+    tags:
+      - 'v*' # Trigger on new tags like v1.0.0
+  workflow_dispatch: # Allows manual triggering from the GitHub Actions tab
+
+name: Create RPM Release # Workflow name
 
 jobs:
-    build:
-        name: Create RPM Release
-        runs-on: ubuntu-latest
+  build:
+    name: Create RPM Release
+    runs-on: ubuntu-latest
 
-        steps:
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Use v4 for actions/checkout
 
-        - name: Checkout code
-          uses: actions/checkout@master
+      # Optional: Add a debug step to list files if you still have path issues
+      # - name: List files for debugging
+      #   run: ls -al /github/workspace/
 
-        - name: Create Release
-          id: create_release
-          uses: actions/create-release@latest
-          env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-          with:
-              tag_name: ${{ github.ref }}
-              release_name: Release ${{ github.ref }}
-              body: |
-                Changes in this Release
-                - Create RPM
-                - Upload Source RPM
-              draft: false
-              prerelease: false
-            
-        - name: build RPM package
-          id: rpm_build
-          uses: naveenrajm7/rpmbuild@master
-          with:
-              spec_file: "vop.spec"
-            
-        - name: Upload Release Asset
-          id: upload-release-asset 
-          uses: actions/upload-release-asset@v1
-          env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-              upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-              asset_path: ${{ steps.rpm_build.outputs.source_rpm_path }}
-              asset_name: ${{ steps.rpm_build.outputs.source_rpm_name }}
-              asset_content_type: ${{ steps.rpm_build.outputs.rpm_content_type }}
+      - name: Build RPM package
+        id: rpm_build # ID to reference its outputs
+        uses: naveenrajm7/rpmbuild@master # Check this action's outputs and stability
+        with:
+          spec_file: "vop.spec" # Assumes vop.spec is in the repository root
+
+      - name: Create Release and Upload Assets
+        uses: softprops/action-gh-release@v2 # Standard action for releases and asset uploads
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }} # The full ref (e.g., refs/tags/v1.0.0)
+          name: Release ${{ github.ref_name }} # Just the tag name (e.g., v1.0.0)
+          body: |
+            Changes in this Release
+            - Create RPM
+            - Upload Source RPM
+          draft: false
+          prerelease: false
+          files: |
+            ${{ steps.rpm_build.outputs.source_rpm_path }} # Path to the generated SRPM
+            # If naveenrajm7/rpmbuild also provides a binary RPM, you'd add another line here:
+            ${{ steps.rpm_build.outputs.rpm_path }} # (Example output name, check actual doc)
+            # You can add more files, e.g., if you create a .tar.gz of your source:
+            vop-${{ github.ref_name }}.tar.gz
