@@ -108,6 +108,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
+            ${{ steps.rpm_build.outputs.rpm_dir_path }} # Binary RPM
             ${{ steps.rpm_build.outputs.source_rpm_path }} # Path to the generated SRPM
             ${{ steps.rpm_build.outputs.rpm_path }}
             ${{ steps.create_tarball.outputs.TARBALL_PATH }} # <--- ADDED THIS LINE!
