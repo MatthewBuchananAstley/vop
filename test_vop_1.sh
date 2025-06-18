@@ -1,5 +1,7 @@
 #!/bin/bash
 #
+# SPDX-License-Identifier: Apache-2.0
+# FileCopyrightText: <text> 2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text>
 # Script to test if the pw string contains the required amount of characters
 
 
