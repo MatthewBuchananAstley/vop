@@ -16,4 +16,4 @@ def shannon_entropy(s):
 
 
 if __name__ == '__main__':
-    print(sys.argv[1], shannon_entropy(sys.argv[1]))
+    print(str(sys.argv[1]), shannon_entropy(sys.argv[1]))

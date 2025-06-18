@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 #
-# FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
 # Version: 1.4.0 
+# FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
+# SPDX-License-Identifier: Apache-2.0
 # Script to generate passwords with at least one lowercase, one uppercase letter and one special character or more.
 # The password can be base64 encoded if needed. 
 
@@ -56,12 +57,20 @@ class chstr():
         a4 = [ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ]
         return(a4[a3])
 
+    def replace_non_printables(char_list):
+
+        filtered_chars = [c for c in char_list if c.isprintable() and not c.isspace()]
+        return(''.join(filtered_chars))
+
+
     def rhsh(self):
         a = secrets.SystemRandom("/dev/urandom")
         # Veel random bytes
         a3 = a.randbytes(int(self)*777)
+        #a3 = a.randbytes(int(self)*777).decode('latin1')
         # Maak er een string van
         b = str(a3)
+        #d = str(chstr.replace_non_printables(a3))
         # Base64 encode zonder rare karakters
         d = base64.urlsafe_b64encode(bytes(b, encoding='UTF-8')).decode()
         #logging.info("len b64 pw: " + str(len(d)))

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #
-# 2025 Matthew Buchanan Astley (matthewbuchanan@astley.nl, mbastley@gmail.com)
+# FileCopyrightText: <text> 2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl), with A.I. </text> 
+# SPDX-License-Identifier: Apache-2.0
 #
 # A version that outputs even more special characters, made together with ChatGPT.
 # It introduces more entropy to the password and more issues with other tools.
