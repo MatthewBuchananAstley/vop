@@ -64,7 +64,7 @@ jobs:
           echo "--- Signeren van Assets ---"
           # Dynamisch vinden en signeren van de Source RPM
           # De output van find is het volledige pad inclusief de bestandsnaam
-          ACTUAL_SOURCE_RPM=$(find /home/runner/rpmbuild/SRPMS/ -name "*.src.rpm" -print -quit)
+          ACTUAL_SOURCE_RPM=$(find $HOME/runner/rpmbuild/SRPMS/ -name "*.src.rpm" -print -quit)
           if [ -f "$ACTUAL_SOURCE_RPM" ]; then
             echo "Signeren van: $ACTUAL_SOURCE_RPM"
             gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_SOURCE_RPM}.sig" "$ACTUAL_SOURCE_RPM"
@@ -74,7 +74,7 @@ jobs:
           fi
 
           # Dynamisch vinden en signeren van de Binary RPM (noarch)
-          ACTUAL_BINARY_RPM=$(find /home/runner/rpmbuild/RPMS/noarch/ -name "*.noarch.rpm" -print -quit)
+          ACTUAL_BINARY_RPM=$(find $HOME/rpmbuild/RPMS/noarch/ -name "*.noarch.rpm" -print -quit)
           if [ -f "$ACTUAL_BINARY_RPM" ]; then
             echo "Signeren van: $ACTUAL_BINARY_RPM"
             gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_BINARY_RPM}.sig" "$ACTUAL_BINARY_RPM"
@@ -147,8 +147,8 @@ jobs:
           draft: false
           prerelease: false
           files: | # <--- BIJGEWERKTE FILES SECTIE INCL. SIGNATUREN
-            /home/runner/rpmbuild/SRPMS/*.src.rpm           # Source RPM
-            /home/runner/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
+            $HOME/rpmbuild/SRPMS/*.src.rpm           # Source RPM
+            $HOME/runner/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
             ${{ steps.create_tarball.outputs.TARBALL_PATH }} # Source Tarball
             ${{ steps.sign_assets.outputs.SIGNED_SOURCE_RPM_SIG }} # Handtekening Source RPM
             ${{ steps.sign_assets.outputs.SIGNED_BINARY_RPM_SIG }} # Handtekening Binary RPM
