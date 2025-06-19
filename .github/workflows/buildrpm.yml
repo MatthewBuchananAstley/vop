@@ -47,10 +47,10 @@ jobs:
           spec_file: "vop.spec"
 
       - name: Copy RPMs to workspace
-      run: |
-        mkdir -p ${{ github.workspace }}/artifacts
-        cp -v /github/home/rpmbuild/SRPMS/*.rpm ${{ github.workspace }}/artifacts/
-        cp -v /github/home/rpmbuild/RPMS/noarch/*.rpm ${{ github.workspace }}/artifacts/ || true
+        run: |
+          mkdir -p ${{ github.workspace }}/artifacts
+          cp -v /github/home/rpmbuild/SRPMS/*.rpm ${{ github.workspace }}/artifacts/
+          cp -v /github/home/rpmbuild/RPMS/noarch/*.rpm ${{ github.workspace }}/artifacts/ || true
 
 
       # --- NIEUWE STAP: Set up GPG and Sign Release Assets ---
