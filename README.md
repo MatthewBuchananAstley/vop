@@ -1,5 +1,6 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/MatthewBuchananAstley/vop/badge)](https://securityscorecards.dev/viewer/?uri=github.com/MatthewBuchananAstley/vop)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/8697/badge)](https://www.bestpractices.dev/projects/8697)
+[![Downloads](https://img.shields.io/github/downloads/MatthewBuchananAstley/vop/latest/total?style=flat-square&label=Downloads)](https://github.com/MatthewBuchananAstley/vop/releases/latest)
 
 ![VOP - Quantum Safe Passwords](media/vop-quantum-safe-passwords.png)
 
