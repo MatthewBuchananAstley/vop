@@ -64,7 +64,7 @@ jobs:
           echo "--- Signeren van Assets ---"
           # Dynamisch vinden en signeren van de Source RPM
           # De output van find is het volledige pad inclusief de bestandsnaam
-          ACTUAL_SOURCE_RPM=$(find ~/runner/rpmbuild/SRPMS/ -name "*.src.rpm" -print -quit)
+          ACTUAL_SOURCE_RPM=$(find ${{ github.workspace }} -name "*.src.rpm" -print -quit)
           if [ -f "$ACTUAL_SOURCE_RPM" ]; then
             echo "Signeren van: $ACTUAL_SOURCE_RPM"
             gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_SOURCE_RPM}.sig" "$ACTUAL_SOURCE_RPM"
@@ -74,7 +74,7 @@ jobs:
           fi
 
           # Dynamisch vinden en signeren van de Binary RPM (noarch)
-          ACTUAL_BINARY_RPM=$(find /home/runner/rpmbuild/RPMS/noarch/ -name "*.noarch.rpm" -print -quit)
+          ACTUAL_BINARY_RPM=$(find ${{ github.workspace }} -name "*.noarch.rpm" -print -quit)
           if [ -f "$ACTUAL_BINARY_RPM" ]; then
             echo "Signeren van: $ACTUAL_BINARY_RPM"
             gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_BINARY_RPM}.sig" "$ACTUAL_BINARY_RPM"
@@ -106,17 +106,17 @@ jobs:
           echo "--- Contents of ${{ github.workspace }} (Checkout Dir) ---"
           ls -al ${{ github.workspace }}/ # Corrected: uses the actual workspace path
           echo "--- Contents of /home/runner/rpmbuild/ (RPM Base Dir) ---"
-          ls -al /home/runner/rpmbuild/ # Directly specify known base path
+          ls -al ${{ github.workspace }}/rpmbuild/ # Directly specify known base path
           echo "--- Contents of /home/runner/rpmbuild/RPMS/ ---"
           ls -al /home/runner/rpmbuild/RPMS/
           echo "--- Contents of /home/runner/rpmbuild/RPMS/noarch/ ---"
-          ls -al /home/runner/rpmbuild/RPMS/noarch/
+          ls -al ${{ github.workspace }}/rpmbuild/RPMS/noarch/
           echo "--- Contents of /home/runner/rpmbuild/SRPMS/ ---"
-          ls -al /home/runner/rpmbuild/SRPMS/
+          ls -al ${{ github.workspace }}/rpmbuild/SRPMS/
           echo "--- Contents of Signed Assets directory (if applicable) ---"
           # Controleer of de .sig bestanden bestaan naast de originele assets
-          ls -al /home/runner/rpmbuild/SRPMS/*.sig 2>/dev/null || echo "No .sig for Source RPM found"
-          ls -al /home/runner/rpmbuild/RPMS/noarch/*.sig 2>/dev/null || echo "No .sig for Binary RPM found"
+          ls -al ${{ github.workspace }}/rpmbuild/SRPMS/*.sig 2>/dev/null || echo "No .sig for Source RPM found"
+          ls -al ${{ github.workspace }}rpmbuil/RPMS/noarch/*.sig 2>/dev/null || echo "No .sig for Binary RPM found"
           ls -al ${{ steps.create_tarball.outputs.TARBALL_PATH }}.sig 2>/dev/null || echo "No .sig for Tarball found"
 
 
@@ -147,8 +147,8 @@ jobs:
           draft: false
           prerelease: false
           files: | # <--- BIJGEWERKTE FILES SECTIE INCL. SIGNATUREN
-            /home/runner/rpmbuild/SRPMS/*.src.rpm           # Source RPM
-            /home/runner/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
+            ${{ github.workspace }}/rpmbuild/SRPMS/*.src.rpm           # Source RPM
+            ${{ github.workspace }}/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
             ${{ steps.create_tarball.outputs.TARBALL_PATH }} # Source Tarball
             ${{ steps.sign_assets.outputs.SIGNED_SOURCE_RPM_SIG }} # Handtekening Source RPM
             ${{ steps.sign_assets.outputs.SIGNED_BINARY_RPM_SIG }} # Handtekening Binary RPM
