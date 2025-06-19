@@ -10,104 +10,79 @@ jobs:
   build:
     name: Create RPM Release
     runs-on: ubuntu-latest
-    permissions: # <--- ADD THIS SECTION!
+    permissions:
       contents: write # Grants permission to create releases and upload assets
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Use v4 for actions/checkout
+        uses: actions/checkout@v4
 
-      # Optional: Add a debug step to list files if you still have path issues
-      # - name: List files for debugging
-      #   run: ls -al /github/workspace/
-      # --- NEW STEP TO CREATE THE SOURCE TARBALL ---
+      # --- Step to Create the Source Tarball ---
       - name: Create Source Tarball
+        id: create_tarball # Assign an ID to this step to reference its output
         run: |
-          # Get the repository name (e.g., 'vop' from 'MatthewBuchananAstley/vop')
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
-          # Get the tag name without 'refs/tags/' prefix (e.g., 'v1.0.0' or 'main')
           TAG_NAME="${{ github.ref_name }}"
-
-          # Define the desired tarball filename (e.g., vop-main.tar.gz)
           TARBALL_NAME="${REPO_NAME}-${TAG_NAME}.tar.gz"
+          REPO_ROOT_DIR="${{ github.workspace }}"
 
-          # The directory that contains your repository's content
-          # This is the directory that 'actions/checkout@v4' puts your code into.
-          # It is always available as the GITHUB_WORKSPACE environment variable.
-          REPO_ROOT_DIR="${{ github.workspace }}" # This is /github/workspace/
-
-          # --- CRUCIAL CHANGE HERE ---
-          # We want to create the tarball OUTSIDE of the directory we are archiving
-          # The current working directory for this 'run' step is already /github/workspace
-          # So, let's create the tarball in a temporary location, then move it.
-          # Or, better, create it in the parent of the actual workspace and then reference it.
-
-          # Alternative 1: Create tarball in a temp dir and then copy (more steps, very robust)
-          # mkdir -p /tmp/tarball_output
-          # tar -czf "/tmp/tarball_output/$TARBALL_NAME" --exclude='.git' --exclude='.github' --exclude='node_modules' -C "$REPO_ROOT_DIR" .
-          # mv "/tmp/tarball_output/$TARBALL_NAME" "$TARBALL_NAME" # Move to /github/workspace
-
-          # Alternative 2 (Simplest and often works): Use the parent directory for tar's operation
-          # The current shell's PWD is /github/workspace.
-          # We want to tar up the *contents* of /github/workspace
-          # The trick is to tar from *one level up* and specify the directory name.
-
-          # Go to the parent of the GITHUB_WORKSPACE to tar the REPO_ROOT_DIR.
-          # This assumes GITHUB_WORKSPACE is like /home/runner/work/repo/repo
-          # and we want to tar the *second* 'repo' directory.
-
-          # Let's verify the layout from actions/checkout@v4 again:
-          # It checks out your repo directly into ${GITHUB_WORKSPACE} which is /github/workspace
-          # So, the repository root IS /github/workspace.
-
-          # The issue is likely still tar trying to write the output file into the directory
-          # it's actively reading from, or some subtle filesystem activity.
-
-          # Let's make the tarball in a *known separate location* first, then move it.
-          # This is the most reliable way to avoid the "file changed" error.
-          TEMP_TARBALL_PATH="/tmp/$TARBALL_NAME" # Create in a system temporary directory
+          TEMP_TARBALL_PATH="/tmp/$TARBALL_NAME"
 
           # Archive the contents of the repository root
-          # -C "$REPO_ROOT_DIR" .  means: Go to $REPO_ROOT_DIR, then archive its content ('.')
           tar -czf "$TEMP_TARBALL_PATH" --exclude='.git' --exclude='.github' --exclude='node_modules' -C "$REPO_ROOT_DIR" .
 
-          # Now, move the created tarball to the workspace for the next step to find it
+          # Move the created tarball to the workspace for the next step to find it
           mv "$TEMP_TARBALL_PATH" "$REPO_ROOT_DIR/$TARBALL_NAME"
 
           echo "Generated tarball: $TARBALL_NAME"
-          # Store the tarball path, now it's guaranteed to be in the workspace
           echo "TARBALL_PATH=$REPO_ROOT_DIR/$TARBALL_NAME" >> $GITHUB_OUTPUT
-          
-        id: create_tarball # Assign an ID to this step to reference its output
-        
+
+      # --- Step to Build RPM package ---
       - name: Build RPM package
         id: rpm_build # ID to reference its outputs
-        uses: naveenrajm7/rpmbuild@master # Check this action's outputs and stability
+        uses: naveenrajm7/rpmbuild@master
         with:
-          spec_file: "vop.spec" # Assumes vop.spec is in the repository root
-          
-      - name: Debug RPM Build Outputs
-        run: |
-          echo "Source RPM Path: ${{ steps.rpm_build.outputs.source_rpm_path }}"
-          echo "Binary RPM Path: ${{ steps.rpm_build.outputs.rpm_dir_path }}"
-          # Add any other outputs you find in the action's docs
-          # You might need to look for common outputs like 'rpm_name', 'source_rpm_name', etc.
+          spec_file: "vop.spec"
 
+      # --- Debugging step to confirm file paths (CRITICAL for diagnosing) ---
+      - name: Debug Generated Files and Paths
+        if: always() # Run even if previous steps fail, for debugging
+        run: |
+          echo "--- Contents of /github/workspace/ (Checkout Dir) ---"
+          ls -al /github/workspace/
+          echo "--- Contents of /github/home/rpmbuild/ (Potential RPM Base Dir) ---"
+          ls -al /github/home/rpmbuild/
+          echo "--- Contents of /github/home/rpmbuild/RPMS/ ---"
+          ls -al /github/home/rpmbuild/RPMS/
+          echo "--- Contents of /github/home/rpmbuild/RPMS/noarch/ ---"
+          ls -al /github/home/rpmbuild/RPMS/noarch/
+          echo "--- Contents of /github/home/rpmbuild/SRPMS/ ---"
+          ls -al /github/home/rpmbuild/SRPMS/
+
+          echo "--- Verifying Output Variables ---"
+          echo "Source RPM Path (from action): ${{ steps.rpm_build.outputs.source_rpm_path }}"
+          echo "Binary RPM Dir Path (from action): ${{ steps.rpm_build.outputs.rpm_dir_path }}"
+          echo "Tarball Path (from create_tarball step): ${{ steps.create_tarball.outputs.TARBALL_PATH }}"
+          echo "Expected Binary RPM Upload Pattern (what we're trying to match): ${{ steps.rpm_build.outputs.rpm_dir_path }}/noarch/*.rpm"
+        shell: bash
+
+      # --- Step to Create GitHub Release and Upload Assets ---
       - name: Create Release and Upload Assets
-        uses: softprops/action-gh-release@v2 # Standard action for releases and asset uploads
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }} # The full ref (e.g., refs/tags/v1.0.0)
-          name: Release ${{ github.ref_name }} # Just the tag name (e.g., v1.0.0)
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref_name }}
           body: |
-            Changes in this Release
-            - Create RPM
-            - Upload Source RPM
+            This is an automated release.
+            Details:
+            - Source RPM generated.
+            - Binary RPM generated.
             - Source tarball included.
           draft: false
           prerelease: false
-          files: |
+          files: | # <--- THIS IS THE FINAL CORRECTED FILES SECTION
             ${{ steps.rpm_build.outputs.source_rpm_path }}
             ${{ steps.rpm_build.outputs.rpm_dir_path }}/noarch/*.rpm
             ${{ steps.create_tarball.outputs.TARBALL_PATH }}
