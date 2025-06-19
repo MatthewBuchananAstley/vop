@@ -51,13 +51,14 @@ jobs:
           echo "--- Contents of /github/workspace/ (Checkout Dir) ---"
           #ls -al /github/workspace/
           echo "--- Contents of /github/home/rpmbuild/ (Potential RPM Base Dir) ---"
-          ls -al /github/home/rpmbuild/
+          ls -la /home/runner/work/_temp/_github_home
+          #ls -al /github/home/rpmbuild/
           echo "--- Contents of /github/home/rpmbuild/RPMS/ ---"
-          ls -al /github/home/rpmbuild/RPMS/
+          #ls -al /github/home/rpmbuild/RPMS/
           echo "--- Contents of /github/home/rpmbuild/RPMS/noarch/ ---"
-          ls -al /github/home/rpmbuild/RPMS/noarch/
+          #ls -al /github/home/rpmbuild/RPMS/noarch/
           echo "--- Contents of /github/home/rpmbuild/SRPMS/ ---"
-          ls -al /github/home/rpmbuild/SRPMS/
+          #ls -al /github/home/rpmbuild/SRPMS/
 
           echo "--- Verifying Output Variables ---"
           echo "Source RPM Path (from action): ${{ steps.rpm_build.outputs.source_rpm_path }}"
