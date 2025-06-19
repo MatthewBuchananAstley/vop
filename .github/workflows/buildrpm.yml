@@ -64,7 +64,7 @@ jobs:
           echo "--- Signeren van Assets ---"
           # Dynamisch vinden en signeren van de Source RPM
           # De output van find is het volledige pad inclusief de bestandsnaam
-          ACTUAL_SOURCE_RPM=$(find /github/home/runner/rpmbuild/SRPMS/ -name "*.src.rpm" -print -quit)
+          ACTUAL_SOURCE_RPM=$(find /home/runner/rpmbuild/SRPMS/ -name "*.src.rpm" -print -quit)
           if [ -f "$ACTUAL_SOURCE_RPM" ]; then
             echo "Signeren van: $ACTUAL_SOURCE_RPM"
             gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_SOURCE_RPM}.sig" "$ACTUAL_SOURCE_RPM"
@@ -74,13 +74,13 @@ jobs:
           fi
 
           # Dynamisch vinden en signeren van de Binary RPM (noarch)
-          ACTUAL_BINARY_RPM=$(find /github/home/rpmbuild/RPMS/noarch/ -name "*.noarch.rpm" -print -quit)
+          ACTUAL_BINARY_RPM=$(find /home/runner/rpmbuild/RPMS/noarch/ -name "*.noarch.rpm" -print -quit)
           if [ -f "$ACTUAL_BINARY_RPM" ]; then
             echo "Signeren van: $ACTUAL_BINARY_RPM"
             gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_BINARY_RPM}.sig" "$ACTUAL_BINARY_RPM"
             echo "SIGNED_BINARY_RPM_SIG=${ACTUAL_BINARY_RPM}.sig" >> $GITHUB_OUTPUT
           else
-            echo "Waarschuwing: Geen Binary RPM gevonden om te signeren in /github/home/rpmbuild/RPMS/noarch/."
+            echo "Waarschuwing: Geen Binary RPM gevonden om te signeren in /home/runner/rpmbuild/RPMS/noarch/."
           fi
 
           # Signeren van de Tarball
@@ -127,7 +127,7 @@ jobs:
           echo "Expected Source RPM SIG Path (from sign_assets step): ${{ steps.sign_assets.outputs.SIGNED_SOURCE_RPM_SIG }}"
           echo "Expected Binary RPM SIG Path (from sign_assets step): ${{ steps.sign_assets.outputs.SIGNED_BINARY_RPM_SIG }}"
           echo "Expected Tarball SIG Path (from sign_assets step): ${{ steps.sign_assets.outputs.SIGNED_TARBALL_SIG }}"
-          echo "Expected Binary RPM Upload Pattern: /github/home/rpmbuild/RPMS//noarch/*.rpm"
+          echo "Expected Binary RPM Upload Pattern: /home/runner/rpmbuild/RPMS//noarch/*.rpm"
         shell: bash
 
       # --- Step to Create GitHub Release and Upload Assets ---
@@ -147,8 +147,8 @@ jobs:
           draft: false
           prerelease: false
           files: | # <--- BIJGEWERKTE FILES SECTIE INCL. SIGNATUREN
-            /github/home/rpmbuild/SRPMS/*.src.rpm           # Source RPM
-            /github/home/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
+            /home/runner/rpmbuild/SRPMS/*.src.rpm           # Source RPM
+            /home/runner/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
             ${{ steps.create_tarball.outputs.TARBALL_PATH }} # Source Tarball
             ${{ steps.sign_assets.outputs.SIGNED_SOURCE_RPM_SIG }} # Handtekening Source RPM
             ${{ steps.sign_assets.outputs.SIGNED_BINARY_RPM_SIG }} # Handtekening Binary RPM
