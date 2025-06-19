@@ -46,6 +46,13 @@ jobs:
         with:
           spec_file: "vop.spec"
 
+      - name: Copy RPMs to workspace
+      run: |
+        mkdir -p ${{ github.workspace }}/artifacts
+        cp -v /github/home/rpmbuild/SRPMS/*.rpm ${{ github.workspace }}/artifacts/
+        cp -v /github/home/rpmbuild/RPMS/noarch/*.rpm ${{ github.workspace }}/artifacts/ || true
+
+
       # --- NIEUWE STAP: Set up GPG and Sign Release Assets ---
       - name: Set up GPG and Sign Release Assets
         id: sign_assets # Geef deze stap een ID om de outputs te kunnen refereren
@@ -64,20 +71,20 @@ jobs:
           echo "--- Signeren van Assets ---"
           # Dynamisch vinden en signeren van de Source RPM
           # De output van find is het volledige pad inclusief de bestandsnaam
-          ACTUAL_SOURCE_RPM=$(find $HOME/rpmbuild/SRPMS/ -name "*.src.rpm" -print -quit)
+          ACTUAL_SOURCE_RPM=$(find "${{ github.workspace }}/artifacts" -name "*.src.rpm" -print -quit)
           if [ -f "$ACTUAL_SOURCE_RPM" ]; then
             echo "Signeren van: $ACTUAL_SOURCE_RPM"
-            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_SOURCE_RPM}.sig" "$ACTUAL_SOURCE_RPM"
+            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${{ github.workspace }}/artifacts/$(basename "$ACTUAL_SOURCE_RPM").sig" "$ACTUAL_SOURCE_RPM"
             echo "SIGNED_SOURCE_RPM_SIG=${ACTUAL_SOURCE_RPM}.sig" >> $GITHUB_OUTPUT
           else
             echo "Waarschuwing: Geen Source RPM gevonden om te signeren in /home/runner/rpmbuild/SRPMS/."
           fi
 
           # Dynamisch vinden en signeren van de Binary RPM (noarch)
-          ACTUAL_BINARY_RPM=$(find $HOME/rpmbuild/RPMS/noarch/ -name "*.noarch.rpm" -print -quit)
+          ACTUAL_BINARY_RPM=$(find "${{ github.workspace }}/artifacts" -name "*.noarch.rpm" -print -quit)
           if [ -f "$ACTUAL_BINARY_RPM" ]; then
             echo "Signeren van: $ACTUAL_BINARY_RPM"
-            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${ACTUAL_BINARY_RPM}.sig" "$ACTUAL_BINARY_RPM"
+            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${{ github.workspace }}/artifacts/$(basename "$ACTUAL_SOURCE_RPM").sig" "$ACTUAL_BINARY_RPM"
             echo "SIGNED_BINARY_RPM_SIG=${ACTUAL_BINARY_RPM}.sig" >> $GITHUB_OUTPUT
           else
             echo "Waarschuwing: Geen Binary RPM gevonden om te signeren in /home/runner/rpmbuild/RPMS/noarch/."
@@ -147,8 +154,8 @@ jobs:
           draft: false
           prerelease: false
           files: | # <--- BIJGEWERKTE FILES SECTIE INCL. SIGNATUREN
-            $HOME/rpmbuild/SRPMS/*.src.rpm           # Source RPM
-            $HOME/rpmbuild/RPMS/noarch/*.rpm         # Binary RPM
+            ${{ github.workspace }}/artifacts/*.rpm
+            ${{ github.workspace }}/artifacts/*.sig
             ${{ steps.create_tarball.outputs.TARBALL_PATH }} # Source Tarball
             ${{ steps.sign_assets.outputs.SIGNED_SOURCE_RPM_SIG }} # Handtekening Source RPM
             ${{ steps.sign_assets.outputs.SIGNED_BINARY_RPM_SIG }} # Handtekening Binary RPM
