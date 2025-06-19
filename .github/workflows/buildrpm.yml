@@ -51,7 +51,7 @@ jobs:
           echo "--- Contents of /github/workspace/ (Checkout Dir) ---"
           #ls -al /github/workspace/
           echo "--- Contents of /github/home/rpmbuild/ (Potential RPM Base Dir) ---"
-          ls -la /home/runner/work/_temp/_github_home
+          #ls -la /home/runner/work/_temp/_github_home
           #ls -al /github/home/rpmbuild/
           echo "--- Contents of /github/home/rpmbuild/RPMS/ ---"
           #ls -al /github/home/rpmbuild/RPMS/
