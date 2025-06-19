@@ -49,7 +49,7 @@ jobs:
         if: always() # Run even if previous steps fail, for debugging
         run: |
           echo "--- Contents of /github/workspace/ (Checkout Dir) ---"
-          ls -al /github/workspace/
+          #ls -al /github/workspace/
           echo "--- Contents of /github/home/rpmbuild/ (Potential RPM Base Dir) ---"
           ls -al /github/home/rpmbuild/
           echo "--- Contents of /github/home/rpmbuild/RPMS/ ---"
