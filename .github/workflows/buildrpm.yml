@@ -86,6 +86,17 @@ jobs:
             echo "Fout: Binary RPM niet gevonden in '${{ steps.rpm_build.outputs.rpm_dir_path }}/noarch'. Kan niet kopiëren of signeren."
             exit 1 # Stop de workflow als het cruciale bestand niet gevonden wordt
           fi
+ 
+             # De tarball is al in ${{ github.workspace }}
+
+          echo "--- Signeren van Assets in ${{ github.workspace }} ---"
+          # Signeer de Source RPM vanuit de gekopieerde locatie
+          gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${COPIED_SOURCE_RPM}.sig" "$COPIED_SOURCE_RPM"
+          echo "SIGNED_SOURCE_RPM_SIG=${COPIED_SOURCE_RPM}.sig" >> $GITHUB_OUTPUT
+
+          # Signeer de Binary RPM vanuit de gekopieerde locatie
+          gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${COPIED_BINARY_RPM}.sig" "$COPIED_BINARY_RPM"
+          echo "SIGNED_BINARY_RPM_SIG=${COPIED_BINARY_RPM}.sig" >> $GITHUB_OUTPUT
 
           # Signeren van de Tarball
           TARBALL_PATH="${{ steps.create_tarball.outputs.TARBALL_PATH }}"
