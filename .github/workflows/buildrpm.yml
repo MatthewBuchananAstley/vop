@@ -64,7 +64,8 @@ jobs:
           echo "--- Kopiëren van RPMs naar ${{ github.workspace }} voor Signering ---"
           # Kopieer de Source RPM met behulp van de output van rpm_build
           # rpm_build.outputs.source_rpm_path is al het volledige pad naar de SRPM
-          ACTUAL_SOURCE_RPM_ORIG="find "${{ steps.rpm_build.outputs.source_rpm_path }}" -name "*.src.rpm" -print -quit"
+          #ACTUAL_SOURCE_RPM_ORIG="find "${{ steps.rpm_build.outputs.source_rpm_path }}" -name "*.src.rpm" -print -quit"
+          ACTUAL_SOURCE_RPM_ORIG="${{ steps.rpm_build.outputs.source_rpm_path }}"
           if [ -f "$ACTUAL_SOURCE_RPM_ORIG" ]; then
             cp "$ACTUAL_SOURCE_RPM_ORIG" "${{ github.workspace }}/"
             COPIED_SOURCE_RPM="${{ github.workspace }}/$(basename "$ACTUAL_SOURCE_RPM_ORIG")"
