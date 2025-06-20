@@ -67,7 +67,7 @@ jobs:
           ACTUAL_SOURCE_RPM=$(find "${{ steps.rpm_build.outputs.source_rpm_path }}" -name "*.src.rpm" -print -quit)
           if [ -f "$ACTUAL_SOURCE_RPM" ]; then
             echo "Signeren van: $ACTUAL_SOURCE_RPM"
-            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${{ steps.rpm_build.outputs.source_rpm_path }}$(basename "$ACTUAL_SOURCE_RPM").sig" "$ACTUAL_SOURCE_RPM"
+            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "$ACTUAL_SOURCE_RPM.sig" "$ACTUAL_SOURCE_RPM"
             echo "SIGNED_SOURCE_RPM_SIG=${ACTUAL_SOURCE_RPM}.sig" >> $GITHUB_OUTPUT
           else
             echo "Waarschuwing: Geen Source RPM gevonden om te signeren in /home/runner/rpmbuild/SRPMS/."
@@ -77,7 +77,7 @@ jobs:
           ACTUAL_BINARY_RPM=$(find "${{ steps.rpm_build.outputs.rpm_dir_path }}" -name "*.noarch.rpm" -print -quit)
           if [ -f "$ACTUAL_BINARY_RPM" ]; then
             echo "Signeren van: $ACTUAL_BINARY_RPM"
-            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "${{ steps.rpm_build.outputs.rpm_dir_path }}$(basename "$ACTUAL_SOURCE_RPM").sig" "$ACTUAL_BINARY_RPM"
+            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "$ACTUAL_SOURCE_RPM.sig" "$ACTUAL_BINARY_RPM"
             echo "SIGNED_BINARY_RPM_SIG=${ACTUAL_BINARY_RPM}.sig" >> $GITHUB_OUTPUT
           else
             echo "Waarschuwing: Geen Binary RPM gevonden om te signeren in /home/runner/rpmbuild/RPMS/noarch/."
