@@ -164,6 +164,8 @@ jobs:
           files: | # <--- BIJGEWERKTE FILES SECTIE INCL. SIGNATUREN
             ${{ github.workspace }}/*.src.rpm             # Gekopieerde Source RPM
             ${{ github.workspace }}/*.noarch.rpm  
+            ${{ github.workspace }}/*.sig  
+            ${{ github.workspace }}/*.tar.gz  
             ${{ steps.create_tarball.outputs.TARBALL_PATH }} # Source Tarball
             ${{ steps.sign_assets.outputs.SIGNED_SOURCE_RPM_SIG }} # Handtekening Source RPM
             ${{ steps.sign_assets.outputs.SIGNED_BINARY_RPM_SIG }} # Handtekening Binary RPM
