@@ -162,7 +162,8 @@ jobs:
           draft: false
           prerelease: false
           files: | # <--- BIJGEWERKTE FILES SECTIE INCL. SIGNATUREN
-            ${{ github.workspace }}/*.src.rpm             # Gekopieerde Source RPM
+            #${{ github.workspace }}/*.src.rpm             # Gekopieerde Source RPM
+            ${{ steps.rpm_build.outputs.source_rpm_path }}
             ${{ github.workspace }}/*.noarch.rpm  
             ${{ github.workspace }}/*.sig  
             ${{ github.workspace }}/*.tar.gz  
