@@ -14,7 +14,11 @@ Modern passwords have to be (preferably) a random sequence of characters, of suf
 
 # Installation
 
-First check the signature of the signed binary package.
+The latest signed rpm or source package can be downloaded from:
+
+    [Release v1.4.0](https://github.com/MatthewBuchananAstley/vop/releases/tag/v-test-20250620-123916) 
+
+First check the signature of the signed package.
 
 Import the public signing key from the repository:
 
