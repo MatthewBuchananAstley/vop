@@ -14,7 +14,34 @@ Modern passwords have to be (preferably) a random sequence of characters, of suf
 
 # Installation
 
-The application can be installed via the git clone command:
+First check the signature of the signed binary package.
+
+Import the public signing key from the repository:
+
+    curl https://raw.githubusercontent.com/MatthewBuchananAstley/vop/refs/heads/main/mbastley_github_signing_key.asc | gpg --import 
+
+Or from the keys.openpgp.org keyserver with "keyserver hkps://keys.openpgp.org" in ~/.gnupg/gpg.conf:
+
+    $gpg --search-keys "mbastley@gmail.com"
+    gpg: data source: https://keys.openpgp.org:443
+    (1)	M.B.Astley (Github Signing Key) <mbastley@gmail.com>
+	  4096 bit RSA key B958339F1229A6EE, created: 2025-06-19
+    Keys 1-1 of 1 for "mbastley@gmail.com".  Enter number(s), N)ext, or Q)uit > 1
+
+    $gpg --verify vop-1.4.0-1.el9.noarch.rpm.sig vop-1.4.0-1.el9.noarch.rpm
+    gpg: Signature made Fri 20 Jun 2025 12:01:00 CEST
+    gpg:                using RSA key 5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE
+    gpg: Good signature from "M.B.Astley (Github Signing Key) <mbastley@gmail.com>" [ultimate]
+
+    $sha256sum vop-1.4.0-1.el9.noarch.rpm
+     fcacf549e19b7cdf1615e388dd920748a9ef7092f173f2cd23d43b8f6e24fafb
+     sha256:fcacf549e19b7cdf1615e388dd920748a9ef7092f173f2cd23d43b8f6e24fafb
+
+If the signatures are good the latest release can be installed on rpm based systems:
+
+    $sudo rpm -ivh https://github.com/MatthewBuchananAstley/vop/releases/download/v-test-20250620-123916/vop-1.4.0-1.el9.noarch.rpm
+
+Or the application can be downloaded via the git clone command:
 
     $git clone https://github.comm/MatthewBuchananAstley/vop.git
 
