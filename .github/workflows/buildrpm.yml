@@ -61,26 +61,29 @@ jobs:
           # De passphrase file wordt na gebruik weer verwijderd
           echo "${{ secrets.GPG_PASSPHRASE }}" > passphrase.txt
 
-          echo "--- Signeren van Assets ---"
-          # Dynamisch vinden en signeren van de Source RPM
-          # De output van find is het volledige pad inclusief de bestandsnaam
-          ACTUAL_SOURCE_RPM=$(find "${{ steps.rpm_build.outputs.source_rpm_path }}" -name "*.src.rpm" -print -quit)
-          if [ -f "$ACTUAL_SOURCE_RPM" ]; then
-            echo "Signeren van: $ACTUAL_SOURCE_RPM"
-            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "$ACTUAL_SOURCE_RPM.sig" "$ACTUAL_SOURCE_RPM"
-            echo "SIGNED_SOURCE_RPM_SIG=${ACTUAL_SOURCE_RPM}.sig" >> $GITHUB_OUTPUT
+          echo "--- Kopiëren van RPMs naar ${{ github.workspace }} voor Signering ---"
+          # Kopieer de Source RPM met behulp van de output van rpm_build
+          # rpm_build.outputs.source_rpm_path is al het volledige pad naar de SRPM
+          ACTUAL_SOURCE_RPM_ORIG="find "${{ steps.rpm_build.outputs.source_rpm_path }}" -name "*.src.rpm" -print -quit"
+          if [ -f "$ACTUAL_SOURCE_RPM_ORIG" ]; then
+            cp "$ACTUAL_SOURCE_RPM_ORIG" "${{ github.workspace }}/"
+            COPIED_SOURCE_RPM="${{ github.workspace }}/$(basename "$ACTUAL_SOURCE_RPM_ORIG")"
+            echo "Kopie Source RPM naar: $COPIED_SOURCE_RPM"
           else
-            echo "Waarschuwing: Geen Source RPM gevonden om te signeren in /home/runner/rpmbuild/SRPMS/."
+            echo "Fout: Source RPM niet gevonden op '${ACTUAL_SOURCE_RPM_ORIG}'. Kan niet kopiëren of signeren."
+            exit 1 # Stop de workflow als het cruciale bestand niet gevonden wordt
           fi
 
-          # Dynamisch vinden en signeren van de Binary RPM (noarch)
-          ACTUAL_BINARY_RPM=$(find "${{ steps.rpm_build.outputs.rpm_dir_path }}" -name "*.noarch.rpm" -print -quit)
-          if [ -f "$ACTUAL_BINARY_RPM" ]; then
-            echo "Signeren van: $ACTUAL_BINARY_RPM"
-            gpg --batch --yes --passphrase-file passphrase.txt --pinentry-mode loopback --detach-sign --armor -o "$ACTUAL_SOURCE_RPM.sig" "$ACTUAL_BINARY_RPM"
-            echo "SIGNED_BINARY_RPM_SIG=${ACTUAL_BINARY_RPM}.sig" >> $GITHUB_OUTPUT
+          # Kopieer de Binary RPM met behulp van de output van rpm_build
+          # rpm_build.outputs.rpm_dir_path is de directory /home/runner/rpmbuild/RPMS/
+          ACTUAL_BINARY_RPM_ORIG=$(find "${{ steps.rpm_build.outputs.rpm_dir_path }}/noarch" -name "*.noarch.rpm" -print -quit)
+          if [ -f "$ACTUAL_BINARY_RPM_ORIG" ]; then
+            cp "$ACTUAL_BINARY_RPM_ORIG" "${{ github.workspace }}/"
+            COPIED_BINARY_RPM="${{ github.workspace }}/$(basename "$ACTUAL_BINARY_RPM_ORIG")"
+            echo "Kopie Binary RPM naar: $COPIED_BINARY_RPM"
           else
-            echo "Waarschuwing: Geen Binary RPM gevonden om te signeren in /home/runner/rpmbuild/RPMS/noarch/."
+            echo "Fout: Binary RPM niet gevonden in '${{ steps.rpm_build.outputs.rpm_dir_path }}/noarch'. Kan niet kopiëren of signeren."
+            exit 1 # Stop de workflow als het cruciale bestand niet gevonden wordt
           fi
 
           # Signeren van de Tarball
