@@ -22,28 +22,27 @@ First check the signature of the signed package.
 
 Import the public signing key from the repository:
 
-    curl https://raw.githubusercontent.com/MatthewBuchananAstley/vop/refs/heads/main/mbastley_github_signing_key.asc | gpg --import 
+    curl https://raw.githubusercontent.com/MatthewBuchananAstley/vop/refs/heads/main/Automated_Release_Signing_key.pub | gpg --import 
 
 Or from the keys.openpgp.org keyserver with "keyserver hkps://keys.openpgp.org" in ~/.gnupg/gpg.conf:
 
-    $gpg --search-keys "mbastley@gmail.com"
+    $gpg --search-keys "ci@astley.nl"
     gpg: data source: https://keys.openpgp.org:443
-    (1)	M.B.Astley (Github Signing Key) <mbastley@gmail.com>
+    (1)	CI Release Bot (Automated Release Signing Key) <ci@astley.nl>
 	  4096 bit RSA key B958339F1229A6EE, created: 2025-06-19
-    Keys 1-1 of 1 for "mbastley@gmail.com".  Enter number(s), N)ext, or Q)uit > 1
 
     $gpg --verify vop-1.4.0-1.el9.noarch.rpm.sig vop-1.4.0-1.el9.noarch.rpm
-    gpg: Signature made Fri 20 Jun 2025 12:01:00 CEST
+    gpg: Signature made Mon 23 Jun 2025 13:58:31 CEST
     gpg:                using RSA key 5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE
-    gpg: Good signature from "M.B.Astley (Github Signing Key) <mbastley@gmail.com>" [ultimate]
+    gpg: Good signature from "CI Release Bot (Automated Release Signing Key) <ci@astley.nl>" [ultimate]
 
     $sha256sum vop-1.4.0-1.el9.noarch.rpm
-     fcacf549e19b7cdf1615e388dd920748a9ef7092f173f2cd23d43b8f6e24fafb
-     sha256:fcacf549e19b7cdf1615e388dd920748a9ef7092f173f2cd23d43b8f6e24fafb
+     edd32797ca40a510bfe99564fd1f47e2b1453d15f1595166d85edc107efa7915
+     sha256:edd32797ca40a510bfe99564fd1f47e2b1453d15f1595166d85edc107efa7915
 
 If the signatures are good the latest release can be installed on rpm based systems:
 
-    $sudo rpm -ivh https://github.com/MatthewBuchananAstley/vop/releases/download/v-test-20250620-123916/vop-1.4.0-1.el9.noarch.rpm
+    $sudo rpm -ivh https://github.com/MatthewBuchananAstley/vop/releases/download/v-test-20250623-135725/vop-1.4.0-1.el9.noarch.rpm 
 
 Or the application can be downloaded via the git clone command:
 
