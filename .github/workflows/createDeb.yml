@@ -47,17 +47,29 @@ jobs:
         echo "Listing generated .deb files:"
         find ${{ github.workspace }}/../ -name "*.deb" -ls
 
+    - name: Create artifacts directory and move packages
+      run: |
+        # Maak een map voor de gegenereerde artifacts binnen de workspace
+        mkdir -p ${{ github.workspace }}/artifacts
+
+        # Verplaats alle relevante bestanden van de bovenliggende map naar de artifacts map
+        # De find commando's zijn hier relatief aan de DIR waar ze worden uitgevoerd (de root van de repo)
+        find .. -maxdepth 1 -name "*.deb" -exec mv {} ${{ github.workspace }}/artifacts/ \;
+        find .. -maxdepth 1 -name "*.dsc" -exec mv {} ${{ github.workspace }}/artifacts/ \;
+        find .. -maxdepth 1 -name "*.tar.xz" -exec mv {} ${{ github.workspace }}/artifacts/ \;
+        find .. -maxdepth 1 -name "*.buildinfo" -exec mv {} ${{ github.workspace }}/artifacts/ \;
+        find .. -maxdepth 1 -name "*.changes" -exec mv {} ${{ github.workspace }}/artifacts/ \;
+
+        echo "Moved artifacts to: ${{ github.workspace }}/artifacts/"
+        ls -l ${{ github.workspace }}/artifacts/
+
+
     - name: Upload Debian package artifact
       uses: actions/upload-artifact@v4 # Slaat de gegenereerde bestanden op als workflow artifact
       with:
         name: debian-package-artifacts # Naam van het artifact
         path: |
-          ${{ github.workspace }}/vop_*.deb  
-          ${{ github.workspace }}/*.deb
-          ${{ github.workspace }}/*.dsc
-          ${{ github.workspace }}/*.tar.xz
-          ${{ github.workspace }}/*.buildinfo
-          ${{ github.workspace }}/*.changes
+          ${{ github.workspace }}/artifacts/  
         if-no-files-found: warn
         compression-level: 6
         overwrite: false
@@ -67,7 +79,7 @@ jobs:
       id: get_version # Geeft dit step een ID zodat andere steps naar de output kunnen verwijzen
       run: |
         # Zoek het gebouwde .deb bestand in de huidige directory
-        DEB_FILE=$(find ${{ github.workspace }}/../ -maxdepth 1 -name "*.deb" | head -n 1)
+        DEB_FILE=$(find ${{ github.workspace }}/artifacts/ -maxdepth 1 -name "*.deb" | head -n 1)
         if [ -z "$DEB_FILE" ]; then
           echo "No .deb file found. This is unexpected."
           exit 1
@@ -86,11 +98,7 @@ jobs:
       with:
         # Voeg de artifacts toe aan de release
         files: |
-          *.deb
-          *.dsc
-          *.tar.xz
-          *.buildinfo
-          *.changes
+          ${{ github.workspace }}/artifacts/*
         name: Release ${{ steps.get_version.outputs.package_version }} # Naam van de release
         tag_name: ${{ github.ref_name }} # Gebruik de tag naam als de release tag
         body: |
