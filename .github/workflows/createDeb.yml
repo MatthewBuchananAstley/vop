@@ -30,6 +30,29 @@ jobs:
         # Zorg ervoor dat alle afhankelijkheden die je project nodig heeft om te compileren
         # of te bundelen, hier worden geïnstalleerd.
         # Bijvoorbeeld: sudo apt-get install -y libcurl4-openssl-dev zlib1g-dev
+    - name: Import GPG Key for Signing
+      run: |
+        # Creëer een directory voor de GPG-sleutelbos met de juiste permissies
+        mkdir -p ~/.gnupg
+        chmod 700 ~/.gnupg
+
+        # Importeer de privé GPG-sleutel vanuit de GitHub Secret
+        # De --batch flag voorkomt interactieve prompts
+        # --passphrase-fd 0 leest de passphrase van stdin
+        # Het geëxporteerde GPG_PRIVATE_KEY secret moet in ASCII-armor formaat zijn
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+
+        # Configureer gpg-agent om de passphrase te cachen voor de duur van de job
+        # Dit is cruciaal voor non-interactief signeren
+        echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+        echo "allow-loopback-tty" >> ~/.gnupg/gpg.conf
+        echo "expect-passphrase" >> ~/.gnupg/gpg.conf
+
+        # Geef de passphrase door aan de gpg-agent om deze te cachen
+        echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --yes --list-secret-keys
+
+        # Stel de GPG_TTY in, wat soms nodig is voor gpg-agent in CI-omgevingen
+        echo "GPG_TTY=$(tty)" >> $GITHUB_ENV
 
     - name: Build Debian package
       run: |
@@ -37,7 +60,8 @@ jobs:
         # -us: niet ondertekenen met een bronpakketsleutel (unsigned source)
         # -uc: niet ondertekenen met een wijzigingslogsleutel (unsigned changes)
         # Als je wel wilt signeren, heb je GPG-sleutels nodig en een complexere setup
-        dpkg-buildpackage -us -uc
+        #dpkg-buildpackage -us -uc
+        dpkg-buildpackage 
       # Zorg ervoor dat dit de root van je project is, of de directory die de 'debian/' map bevat.
       # Meestal is dit de root van de repo.
       working-directory: ${{ github.workspace }} # De standaard werkmap van de runner
@@ -59,6 +83,7 @@ jobs:
         find .. -maxdepth 1 -name "*.tar.xz" -exec mv {} ${{ github.workspace }}/artifacts/ \;
         find .. -maxdepth 1 -name "*.buildinfo" -exec mv {} ${{ github.workspace }}/artifacts/ \;
         find .. -maxdepth 1 -name "*.changes" -exec mv {} ${{ github.workspace }}/artifacts/ \;
+        find .. -maxdepth 1 -name "*.asc" -exec mv {} ${{ github.workspace }}/artifacts/ \;
 
         echo "Moved artifacts to: ${{ github.workspace }}/artifacts/"
         ls -l ${{ github.workspace }}/artifacts/
