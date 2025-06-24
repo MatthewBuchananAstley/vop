@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest # Draai de job op een standaard Ubuntu runner van GitHub Actions
+    permissions:
+      contents: write # Permission to write releases
 
     steps:
     - name: Checkout repository
