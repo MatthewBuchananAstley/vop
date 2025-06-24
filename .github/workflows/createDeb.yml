@@ -23,7 +23,7 @@ jobs:
         # Werk de package list bij
         sudo apt-get update
         # Installeer essentiële build tools voor Debian/Ubuntu packages
-        sudo apt-get install -y debhelper devscripts build-essential 
+        sudo apt-get install -y debhelper devscripts build-essentiali gnupg 
 
         # --- BELANGRIJK: Voeg hier de specifieke build-dependencies van jouw project toe ---
         # Voorbeelden:
@@ -48,7 +48,7 @@ jobs:
     - name: Find and List .deb files
       run: |
         echo "Listing generated .deb files:"
-        find ${{ github.workspace }} -name "*.deb" -ls
+        find ${{ github.workspace }}/../ -name "*.deb" -ls
 
     - name: Upload Debian package artifact
       uses: actions/upload-artifact@v4 # Slaat de gegenereerde bestanden op als workflow artifact
@@ -65,7 +65,7 @@ jobs:
       id: get_version # Geeft dit step een ID zodat andere steps naar de output kunnen verwijzen
       run: |
         # Zoek het gebouwde .deb bestand in de huidige directory
-        DEB_FILE=$(find ${{ github.workspace }} -maxdepth 1 -name "*.deb" | head -n 1)
+        DEB_FILE=$(find ${{ github.workspace }}/../ -maxdepth 1 -name "*.deb" | head -n 1)
         if [ -z "$DEB_FILE" ]; then
           echo "No .deb file found. This is unexpected."
           exit 1
