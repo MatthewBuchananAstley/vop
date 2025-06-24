@@ -50,8 +50,7 @@ jobs:
       with:
         name: debian-package-artifacts # Naam van het artifact
         path: |
-          ${{ github.workspace }}/../*.deb          # Look on directory up
-          ${{ github.workspace }}/../vop_*.deb  
+          ${{ github.workspace }}/vop_*.deb  
           ${{ github.workspace }}/*.deb
           ${{ github.workspace }}/*.dsc
           ${{ github.workspace }}/*.tar.xz
