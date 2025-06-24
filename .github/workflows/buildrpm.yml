@@ -151,7 +151,7 @@ jobs:
           # Haal de tag naam op (bijv. v1.2.3)
           TAG_NAME=${{ github.ref_name }}
           # Verwijder de 'v' prefix om het pure versienummer te krijgen (bijv. 1.2.3)
-          VERSION=$(echo "$TAG_NAME" | sed 's/^v//')
+          VERSION=$(echo "$TAG_NAME" | cut -d'-' -f1 | sed 's/^v//')
           echo "Extracted version: $VERSION"
           # Optioneel: Update de Version: regel in je .spec bestand
           # Vervang 'your-package.spec' met de naam van je spec bestand
