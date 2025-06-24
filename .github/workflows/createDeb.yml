@@ -53,7 +53,14 @@ jobs:
 
         # Stel de GPG_TTY in, wat soms nodig is voor gpg-agent in CI-omgevingen
         echo "GPG_TTY=$(tty)" >> $GITHUB_ENV
-
+      env:
+        # Omgevingsvariabelen voor GPG-key ID en Passphrase
+        # Zorg ervoor dat DEB_SIGN_KEYID overeenkomt met de KEY_ID_LONG_FORM van je GPG-sleutel
+        # Bijvoorbeeld: DEB_SIGN_KEYID: "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE"
+        DEB_SIGN_KEYID: "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE" # <-- VERVANG DIT MET JE EIGEN KEY ID
+        # De GPG_PASSPHRASE wordt hier via stdin (passphrase-fd 0) doorgegeven
+        # voor de import en caching.
+        #
     - name: Build Debian package
       run: |
         # Gebruik dpkg-buildpackage om het .deb pakket te bouwen
