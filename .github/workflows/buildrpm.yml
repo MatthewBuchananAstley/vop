@@ -144,6 +144,19 @@ jobs:
           echo "Expected Tarball SIG Path (from sign_assets step): ${{ steps.sign_assets.outputs.SIGNED_TARBALL_SIG }}"
           echo "Expected Binary RPM Upload Pattern: /home/runner/rpmbuild/RPMS//noarch/*.rpm"
         shell: bash
+      
+      - name: Extract version from tag and update spec file
+        id: get_version
+        run: |
+          # Haal de tag naam op (bijv. v1.2.3)
+          TAG_NAME=${{ github.ref_name }}
+          # Verwijder de 'v' prefix om het pure versienummer te krijgen (bijv. 1.2.3)
+          VERSION=$(echo "$TAG_NAME" | sed 's/^v//')
+          echo "Extracted version: $VERSION"
+          # Optioneel: Update de Version: regel in je .spec bestand
+          # Vervang 'your-package.spec' met de naam van je spec bestand
+          # sed -i "s/^Version:.*/Version: $VERSION/" your-package.spec
+          echo "RELEASE_VERSION=$VERSION" >> "$GITHUB_OUTPUT"
 
       # --- Step to Create GitHub Release and Upload Assets ---
       - name: Create Release and Upload Assets
@@ -152,7 +165,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          name: Release ${{ github.ref_name }}
+          #name: Release ${{ github.ref_name }}
+          name: Release ${{ steps.get_version.outputs.RELEASE_VERSION }} 
           body: |
             This is an automated release.
             Details:
