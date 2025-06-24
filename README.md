@@ -16,7 +16,7 @@ Modern passwords have to be (preferably) a random sequence of characters, of suf
 
 The latest signed rpm or source package can be downloaded from:
 
-[Release v1.4.0](https://github.com/MatthewBuchananAstley/vop/releases/tag/v-test-20250620-123916) 
+[Release v1.4.0](https://github.com/MatthewBuchananAstley/vop/releases) 
 
 First check the signature of the signed package.
 
@@ -36,13 +36,13 @@ Or from the keys.openpgp.org keyserver with "keyserver hkps://keys.openpgp.org" 
     gpg:                using RSA key 5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE
     gpg: Good signature from "CI Release Bot (Automated Release Signing Key) <ci@astley.nl>" [ultimate]
 
+Check if the sha256 sum matches the sha256 sum on the release page:
+
     $sha256sum vop-1.4.0-1.el9.noarch.rpm
-     edd32797ca40a510bfe99564fd1f47e2b1453d15f1595166d85edc107efa7915
-     sha256:edd32797ca40a510bfe99564fd1f47e2b1453d15f1595166d85edc107efa7915
 
 If the signatures are good the latest release can be installed on rpm based systems:
 
-    $sudo rpm -ivh https://github.com/MatthewBuchananAstley/vop/releases/download/v-test-20250623-135725/vop-1.4.0-1.el9.noarch.rpm 
+    $sudo rpm -ivh https://github.com/MatthewBuchananAstley/vop/releases/download/v-test-20250624-123922/vop-1.4.0-1.el9.noarch.rpm 
 
 Or the application can be downloaded via the git clone command:
 
