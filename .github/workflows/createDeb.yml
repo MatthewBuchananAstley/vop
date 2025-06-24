@@ -87,6 +87,7 @@ jobs:
         echo "Listing generated .deb files:"
         find ${{ github.workspace }}/../ -name "*.deb" -ls
         find ${{ github.workspace }}/../ -name "*.asc" -ls
+        find ${{ github.workspace }}/ -name "*.asc" -ls
 
     - name: Create artifacts directory and move packages
       run: |
