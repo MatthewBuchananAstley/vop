@@ -2,14 +2,9 @@ name: Build and Release Debian Package
 
 on:
   push:
-    branches:
-      - main # Trigger de workflow bij pushes naar de main branch
     tags:
       - 'ubuntu-v*.*.*' # Trigger ook bij tags zoals v1.0.0 (voor releases)
-  pull_request:
-    branches:
-      - main # Trigger bij Pull Requests naar de main branch
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest # Draai de job op een standaard Ubuntu runner van GitHub Actions
