@@ -23,7 +23,7 @@ jobs:
         # Werk de package list bij
         sudo apt-get update
         # Installeer essentiële build tools voor Debian/Ubuntu packages
-        sudo apt-get install -y debhelper devscripts build-essentiali gnupg 
+        sudo apt-get install -y debhelper devscripts build-essential gnupg 
 
         # --- BELANGRIJK: Voeg hier de specifieke build-dependencies van jouw project toe ---
         # Voorbeelden:
