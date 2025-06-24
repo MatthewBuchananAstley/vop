@@ -50,11 +50,17 @@ jobs:
       with:
         name: debian-package-artifacts # Naam van het artifact
         path: |
-          *.deb          # Upload alle .deb bestanden
-          *.dsc          # Optioneel: upload ook de Debian source control file
-          *.tar.xz       # Optioneel: upload ook de tarball van de source code
-          *.buildinfo    # Optioneel: upload de buildinfo file
-          *.changes      # Optioneel: upload de changes file
+          ./*.deb          # Look in the current directory
+          ../vop_*.deb  
+          ${{ github.workspace }}/*.deb
+          ${{ github.workspace }}/*.dsc
+          ${{ github.workspace }}/*.tar.xz
+          ${{ github.workspace }}/*.buildinfo
+          ${{ github.workspace }}/*.changes
+        if-no-files-found: warn
+        compression-level: 6
+        overwrite: false
+        include-hidden-files: false
 
     - name: Get package version (from .deb filename)
       id: get_version # Geeft dit step een ID zodat andere steps naar de output kunnen verwijzen
