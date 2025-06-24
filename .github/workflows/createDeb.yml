@@ -3,7 +3,7 @@ name: Build and Release Debian Package
 on:
   push:
     tags:
-      - 'ubuntu-v*.*.*' # Trigger ook bij tags zoals v1.0.0 (voor releases)
+      - 'ubuntu-v*' # Trigger ook bij tags zoals v1.0.0 (voor releases)
   
 jobs:
   build:
