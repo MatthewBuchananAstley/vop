@@ -56,8 +56,8 @@ jobs:
          
         # Start or restart gpg-agent to pick up new config
         # Use --daemon to run in background
-        gpgconf --kill gpg-agent || true # Kill if already running, ignore errors
-        gpg-agent --daemon --pinentry-program /usr/bin/pinentry-curses # Start the agent
+        #gpgconf --kill gpg-agent || true # Kill if already running, ignore errors
+        #gpg-agent --daemon --pinentry-program /usr/bin/pinentry-curses # Start the agent
 
         # Geef de passphrase door aan de gpg-agent om deze te cachen
         #echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --yes --list-secret-keys
