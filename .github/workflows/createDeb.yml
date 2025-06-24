@@ -8,6 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest # Draai de job op een standaard Ubuntu runner van GitHub Actions
+    env: # Optioneel, maar goed voor consistentie van maintainer info
+      DEBEMAIL: "ci@astley.nl" # Pas dit aan naar je e-mail
+      DEBFULLNAME: "CI Release Bot (Automated Release Signing Key)" # Pas dit aan naar je naam
+      # --- OPLOSSING VOOR KEY MISMATCH ---
+      # Stel de GPG-key ID hier in, zodat deze beschikbaar is voor de hele job,
+      # inclusief de 'Build Debian package' stap.
+      # VERVANG DIT MET DE WERKELIJKE LANGE KEY ID VAN JE 'CI Release Bot' GPG-SLEUTEL!
+      DEB_SIGN_KEYID: "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE" 
     permissions:
       contents: write # Permission to write releases
 
@@ -40,27 +48,28 @@ jobs:
         # De --batch flag voorkomt interactieve prompts
         # --passphrase-fd 0 leest de passphrase van stdin
         # Het geëxporteerde GPG_PRIVATE_KEY secret moet in ASCII-armor formaat zijn
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+        echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import --pinentry-mode loopback
 
         # Configureer gpg-agent om de passphrase te cachen voor de duur van de job
         # Dit is cruciaal voor non-interactief signeren
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-        #echo "allow-loopback-tty" >> ~/.gnupg/gpg.conf
-        #echo "expect-passphrase" >> ~/.gnupg/gpg.conf
+         
+        # Start or restart gpg-agent to pick up new config
+        # Use --daemon to run in background
+        gpgconf --kill gpg-agent || true # Kill if already running, ignore errors
+        gpg-agent --daemon --pinentry-program /usr/bin/pinentry-curses # Start the agent
 
         # Geef de passphrase door aan de gpg-agent om deze te cachen
-        echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --yes --list-secret-keys
+        #echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --yes --list-secret-keys
 
         # Stel de GPG_TTY in, wat soms nodig is voor gpg-agent in CI-omgevingen
         echo "GPG_TTY=$(tty)" >> $GITHUB_ENV
-      env:
-        # Omgevingsvariabelen voor GPG-key ID en Passphrase
-        # Zorg ervoor dat DEB_SIGN_KEYID overeenkomt met de KEY_ID_LONG_FORM van je GPG-sleutel
-        # Bijvoorbeeld: DEB_SIGN_KEYID: "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE"
-        DEB_SIGN_KEYID: "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE" # <-- VERVANG DIT MET JE EIGEN KEY ID
-        # De GPG_PASSPHRASE wordt hier via stdin (passphrase-fd 0) doorgegeven
-        # voor de import en caching.
-        #
+        echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback \
+          --passphrase-fd 0 --yes \
+          --local-user "${{ env.DEB_SIGN_KEYID }}" \
+          --sign --clear-sign -o /dev/null -a /dev/null
+        echo "GPG passphrase successfully cached."
+
     - name: Build Debian package
       run: |
         # Gebruik dpkg-buildpackage om het .deb pakket te bouwen
