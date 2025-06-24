@@ -1,0 +1,23 @@
+Source: vop
+Section: security 
+Priority: optional
+Maintainer: Matthew Buchanan Astley <linux@astley.nl>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+Standards-Version: 4.6.2
+Homepage: https://github.com/MatthewBuchananAstley/vop 
+#Vcs-Browser: https://salsa.debian.org/debian/vop
+#Vcs-Git: https://salsa.debian.org/debian/vop.git
+
+Package: vop
+Architecture: any
+Multi-Arch: foreign
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: A quantum safe password generator. 
+ With this software, reasonably secure modern passwords can be generated.
+ Modern passwords have to be (preferably) a random sequence of characters, of sufficient length (minimally 8 usually) 
+ and should consist of at least one uppercase, one lowercase letter and one special character or more.
+

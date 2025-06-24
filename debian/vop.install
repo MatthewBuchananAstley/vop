@@ -1,0 +1,34 @@
+# Uitvoerbare scripts/programma's
+# Zorg ervoor dat deze bestanden uitvoerbaar zijn (chmod +x) voordat je het pakket bouwt.
+# Aanname: 'vop' is het hoofdprogramma
+vop usr/bin/
+vop.py usr/bin/
+pw usr/bin/
+t3 usr/bin/
+t3.py usr/bin/
+Chi-square_test.py usr/bin/
+Kolmogorov-Smirnov-test.py usr/bin/
+Password_entropy_verifier.py usr/bin/
+shannon_entropy.py usr/bin/
+
+# Documentatie
+CHANGELOG.md usr/share/doc/vop-1.4.0/
+CONTRIBUTING.md usr/share/doc/vop-1.4.0/
+COPYRIGHT.md usr/share/doc/vop-1.4.0/
+LICENCE.md usr/share/doc/vop-1.4.0/
+README.md usr/share/doc/vop-1.4.0/
+SECURITY.md usr/share/doc/vop-1.4.0/
+
+# Andere data/assets
+# Stel dat 'media' een directory is met assets.
+media usr/share/vop-1.4.0/
+# Stel dat 'mbastley_github_signing_key.asc' een GPG-sleutel is die je wilt distribueren.
+# Waar deze precies hoort, hangt af van het gebruik.
+# Als het een sleutel is om te importeren in een keyring, overweeg dan '/usr/share/keyrings/'
+# of '/usr/share/doc/vop-tools/' als documentatie.
+Automated_Release_Signing_key.pub usr/share/doc/vop-1.4.0/
+
+# De volgende bestanden zijn waarschijnlijk testscripts of tijdelijke bestanden en horen NIET in het geïnstalleerde pakket:
+# debian                  # Dit is je bronpakket metadata, NIET voor installatie
+# test_vop_1.sh           # Testscript, NIET voor installatie
+
