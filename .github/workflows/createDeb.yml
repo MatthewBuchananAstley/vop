@@ -45,8 +45,8 @@ jobs:
         # Configureer gpg-agent om de passphrase te cachen voor de duur van de job
         # Dit is cruciaal voor non-interactief signeren
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-        echo "allow-loopback-tty" >> ~/.gnupg/gpg.conf
-        echo "expect-passphrase" >> ~/.gnupg/gpg.conf
+        #echo "allow-loopback-tty" >> ~/.gnupg/gpg.conf
+        #echo "expect-passphrase" >> ~/.gnupg/gpg.conf
 
         # Geef de passphrase door aan de gpg-agent om deze te cachen
         echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --yes --list-secret-keys
