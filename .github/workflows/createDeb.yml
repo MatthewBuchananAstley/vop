@@ -1,0 +1,106 @@
+name: Build and Release Debian Package
+
+on:
+  push:
+    branches:
+      - main # Trigger de workflow bij pushes naar de main branch
+    tags:
+      - 'ubuntu-v*.*.*' # Trigger ook bij tags zoals v1.0.0 (voor releases)
+  pull_request:
+    branches:
+      - main # Trigger bij Pull Requests naar de main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Draai de job op een standaard Ubuntu runner van GitHub Actions
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4 # Haalt de code van je repository op
+
+    - name: Install build dependencies
+      run: |
+        # Werk de package list bij
+        sudo apt-get update
+        # Installeer essentiële build tools voor Debian/Ubuntu packages
+        sudo apt-get install -y debhelper devscripts build-essential 
+
+        # --- BELANGRIJK: Voeg hier de specifieke build-dependencies van jouw project toe ---
+        # Voorbeelden:
+        # Als je C/C++ code compileert: sudo apt-get install -y cmake build-essential libssl-dev
+        # Als je Python code hebt: sudo apt-get install -y python3 python3-pip
+        # Als je Node.js gebruikt: sudo apt-get install -y nodejs npm
+        # Zorg ervoor dat alle afhankelijkheden die je project nodig heeft om te compileren
+        # of te bundelen, hier worden geïnstalleerd.
+        # Bijvoorbeeld: sudo apt-get install -y libcurl4-openssl-dev zlib1g-dev
+
+    - name: Build Debian package
+      run: |
+        # Gebruik dpkg-buildpackage om het .deb pakket te bouwen
+        # -us: niet ondertekenen met een bronpakketsleutel (unsigned source)
+        # -uc: niet ondertekenen met een wijzigingslogsleutel (unsigned changes)
+        # Als je wel wilt signeren, heb je GPG-sleutels nodig en een complexere setup
+        dpkg-buildpackage -us -uc
+      # Zorg ervoor dat dit de root van je project is, of de directory die de 'debian/' map bevat.
+      # Meestal is dit de root van de repo.
+      working-directory: ${{ github.workspace }} # De standaard werkmap van de runner
+
+    - name: Find and List .deb files
+      run: |
+        echo "Listing generated .deb files:"
+        find . -name "*.deb" -ls
+
+    - name: Upload Debian package artifact
+      uses: actions/upload-artifact@v4 # Slaat de gegenereerde bestanden op als workflow artifact
+      with:
+        name: debian-package-artifacts # Naam van het artifact
+        path: |
+          *.deb          # Upload alle .deb bestanden
+          *.dsc          # Optioneel: upload ook de Debian source control file
+          *.tar.xz       # Optioneel: upload ook de tarball van de source code
+          *.buildinfo    # Optioneel: upload de buildinfo file
+          *.changes      # Optioneel: upload de changes file
+
+    - name: Get package version (from .deb filename)
+      id: get_version # Geeft dit step een ID zodat andere steps naar de output kunnen verwijzen
+      run: |
+        # Zoek het gebouwde .deb bestand in de huidige directory
+        DEB_FILE=$(find . -maxdepth 1 -name "*.deb" | head -n 1)
+        if [ -z "$DEB_FILE" ]; then
+          echo "No .deb file found. This is unexpected."
+          exit 1
+        fi
+        # Extraheer de versie uit de bestandsnaam.
+        # Dit patroon werkt voor de meeste Debian/Ubuntu package namen (bijv. mypackage_1.2.3-1_amd64.deb)
+        PACKAGE_VERSION=$(echo "$DEB_FILE" | sed -E 's/.*_([0-9.]+[^_]*)-[0-9]+.*\.deb/\1/')
+        echo "Detected package version: $PACKAGE_VERSION"
+        # Stel een output variabele in die door volgende stappen kan worden gebruikt
+        echo "package_version=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+
+    - name: Create GitHub Release (on tag push)
+      # Deze stap wordt alleen uitgevoerd als de workflow is getriggerd door een tag push
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2 # Een populaire actie voor het maken van GitHub Releases
+      with:
+        # Voeg de artifacts toe aan de release
+        files: |
+          *.deb
+          *.dsc
+          *.tar.xz
+          *.buildinfo
+          *.changes
+        name: Release ${{ steps.get_version.outputs.package_version }} # Naam van de release
+        tag_name: ${{ github.ref_name }} # Gebruik de tag naam als de release tag
+        body: |
+          Dit is een geautomatiseerde release van versie **${{ steps.get_version.outputs.package_version }}**.
+
+          **Installatie:**
+          Download het `.deb` pakket en installeer het met `sudo dpkg -i <pakketnaam>.deb`.
+
+          **Meer informatie:**
+          * Controleer de `CHANGELOG` voor gedetailleerde wijzigingen.
+          * Rapporteer problemen op [Issues](https://github.com/${{ github.repository }}/issues).
+      env:
+        # GITHUB_TOKEN is een standaard secret dat automatisch door GitHub Actions wordt geleverd
+        # Het heeft permissies om releases te maken
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
