@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #
 # Checker to check quantum safety of passwords, using shannon entropy check
-#
-# 2025 Created by ChatGPT, quantum safety check added by Matthew Buchanan Astley (matthewbuchanan@astley.nl, mbastley@gmail.com)
+# SPDX-License-Identifier: Apache-2.0
+# 2025 Code compiled by ChatGPT, quantum safety check added by Matthew Buchanan Astley (matthewbuchanan@astley.nl, mbastley@gmail.com)
 # 
 
 import sys
