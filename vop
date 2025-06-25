@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 #
 # Version: 1.4.0 
-# FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl) </text> 
+# FileCopyrightText: <text> 2022-2025 Matthew Buchanan Astley (mbastley@gmail.com, matthewbuchanan@astley.nl,linux@astley.nl) </text> 
 # SPDX-License-Identifier: Apache-2.0
 # Script to generate passwords with at least one lowercase, one uppercase letter and one special character or more.
-# The password can be base64 encoded if needed. 
+# The password can be base64 encoded if needed.
+# 
 
 import os,sys
 import secrets,base64
