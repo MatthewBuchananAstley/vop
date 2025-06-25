@@ -1,0 +1,59 @@
+name: Auto-generate SPDX SBOM on Script Change
+
+on:
+  push:
+    branches:
+      - main # Of de branch waar je scripts op pusht, bijv. 'development'
+    paths:
+      - 'vop' # Trigger als het vop bestand wijzigt 
+      - 't3' # Trigger als het t3 bestand wijzigt 
+      - 'Password_entrpy_verifier.py' # Trigger als het Password_entrpy_verifier.py bestand wijzigt 
+      - 'pw' # Trigger als het pw bestand wijzigt
+      
+  workflow_dispatch: # Maakt handmatig triggeren mogelijk
+
+jobs:
+  generate_and_commit_sbom:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Essentieel: geeft schrijfrechten aan de workflow
+      pull-requests: write  # Essentieel: nodig om Pull Requests te kunnen maken
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Syft (or your preferred SBOM tool)
+        run: |
+          # Bijvoorbeeld met Syft:
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Generate SPDX SBOM
+        run: |
+          # Genereer het SPDX JSON bestand en sla het op in de root van de repository
+          # Pas 'my-project-sbom.spdx.json' aan naar een geschikte naam
+          syft . -o spdx-json > ./vop-sbom.spdx.json
+
+      - name: Auto-commit SPDX SBOM to a new branch and create PR
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: 'the-changes' # Nieuwe branch naam
+          commit_message: "chore(sbom): Update SPDX SBOM after change"
+          # Alternatieve commit message met een dynamische datum/tijd als je wilt:
+          # commit_message: "chore(sbom): Auto-generated SPDX SBOM update (${{ github.run_id }} - $(date +'%Y-%m-%d %H:%M'))"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Gebruik het ingebouwde GitHub Token
+          commit-message: "chore(sbom): Update SPDX SBOM"
+          title: "Automated SPDX SBOM Update"
+          body: "This Pull Request automatically updates the SPDX Software Bill of Materials. Please review and merge if the changes are expected."
+          head: "the-changes" # De source branch van de PR (waar de SBOM is gecommit)
+          base: main # De target branch van de PR (meestal 'main' of 'master')
+          # Optioneel: Voeg reviewers toe
+          # reviewers: 'jouw-github-gebruikersnaam,ander-reviewer'
+          # Optioneel: Wijs de PR toe aan de gebruiker die de workflow triggert
+          # assignees: ${{ github.actor }}
+          # Optioneel: Label de PR
+          # labels: 'sbom, automated'
