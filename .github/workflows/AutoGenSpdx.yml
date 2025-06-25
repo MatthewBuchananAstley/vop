@@ -23,16 +23,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Syft (or your preferred SBOM tool)
+      - name: Install sbom-tool
         run: |
-          # Bijvoorbeeld met Syft:
-          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+          # Download the latest sbom-tool release (Linux x64 example)
+          curl -L -O https://github.com/microsoft/sbom-tool/releases/download/v4.0.3/sbom-tool-linux-x64 
+          #unzip sbom-tool.zip -d sbom-tool-bin
+          chmod +x sbom-tool-linux-x64
+          sudo mv sbom-tool-linux-x64 /usr/local/bin/ 
 
-      - name: Generate SPDX SBOM
+      - name: Generate SPDX SBOM with sbom-tool
         run: |
-          # Genereer het SPDX JSON bestand en sla het op in de root van de repository
-          # Pas 'my-project-sbom.spdx.json' aan naar een geschikte naam
-          syft . -o spdx-json > ./vop-sbom.spdx.json
+          #  Generate the SBOM (SPDX 2.2 JSON) and copy it to the repo root
+          sbom-tool-linux-x64 generate \
+          -b . \
+          -bc . \
+          -pn "vop" \
+          -pv "1.4.0" \
+          -ps "MatthewBuchananAstley" \
+          -nsb "https://github.com/MatthewBuchananAstley/vop"
 
       - name: Auto-commit SPDX SBOM to a new branch and create PR
         uses: stefanzweifel/git-auto-commit-action@v5
