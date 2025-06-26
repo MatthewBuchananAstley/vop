@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 #
 # Checker to check quantum safety of passwords, using shannon entropy check
 # SPDX-License-Identifier: Apache-2.0
