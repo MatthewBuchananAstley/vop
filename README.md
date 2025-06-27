@@ -8,9 +8,9 @@
 
 A password generator.
 
-With this software, reasonably secure modern passwords can be generated.
+Generate secure quantum safe modern passwords.
 
-Modern passwords have to be (preferably) a random sequence of characters, of sufficient length (minimally 8 usually) and should consist of at least one uppercase, one lowercase letter and one special character or more.
+Modern passwords have to be (preferably) a random sequence of characters, of sufficient length (minimally 8 characters is usually suggested, however to be quantum safe minimally 48) and should consist of at least one uppercase, one lowercase letter and one special character or more.
 
 # Installation
 
