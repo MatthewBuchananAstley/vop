@@ -18,8 +18,6 @@ COPYRIGHT.md usr/share/doc/vop/
 LICENCE.md usr/share/doc/vop/
 README.md usr/share/doc/vop/
 SECURITY.md usr/share/doc/vop/
-_manifest/spdx_2.2/manifest.spdx.json usr/share/doc/vop/sbom/vop.spdx.json
-_manifest/spdx_2.2/manifest.spdx.json.sha256 usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
 # Andere data/assets
 # Stel dat 'media' een directory is met assets.
