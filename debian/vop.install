@@ -12,23 +12,23 @@ Password_entropy_verifier.py usr/bin/
 shannon_entropy.py usr/bin/
 
 # Documentatie
-CHANGELOG.md usr/share/doc/vop-1.4.0/
-CONTRIBUTING.md usr/share/doc/vop-1.4.0/
-COPYRIGHT.md usr/share/doc/vop-1.4.0/
-LICENCE.md usr/share/doc/vop-1.4.0/
-README.md usr/share/doc/vop-1.4.0/
-SECURITY.md usr/share/doc/vop-1.4.0/
-_manifest/spdx_2.2/manifest.spdx.json usr/share/doc/vop-1.4.0/sbom/vop.spdx.json
-_manifest/spdx_2.2/manifest.spdx.json.sha256 usr/share/doc/vop-1.4.0/sbom/vop.spdx.json.sha256
+CHANGELOG.md usr/share/doc/vop/
+CONTRIBUTING.md usr/share/doc/vop/
+COPYRIGHT.md usr/share/doc/vop/
+LICENCE.md usr/share/doc/vop/
+README.md usr/share/doc/vop/
+SECURITY.md usr/share/doc/vop/
+_manifest/spdx_2.2/manifest.spdx.json usr/share/doc/vop/sbom/vop.spdx.json
+_manifest/spdx_2.2/manifest.spdx.json.sha256 usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
 # Andere data/assets
 # Stel dat 'media' een directory is met assets.
-media usr/share/vop-1.4.0/
+media usr/share/vop/
 # Stel dat 'mbastley_github_signing_key.asc' een GPG-sleutel is die je wilt distribueren.
 # Waar deze precies hoort, hangt af van het gebruik.
 # Als het een sleutel is om te importeren in een keyring, overweeg dan '/usr/share/keyrings/'
 # of '/usr/share/doc/vop-tools/' als documentatie.
-Automated_Release_Signing_key.pub usr/share/doc/vop-1.4.0/
+Automated_Release_Signing_key.pub usr/share/doc/vop/
 
 # De volgende bestanden zijn waarschijnlijk testscripts of tijdelijke bestanden en horen NIET in het geïnstalleerde pakket:
 # debian                  # Dit is je bronpakket metadata, NIET voor installatie
