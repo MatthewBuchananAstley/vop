@@ -2,8 +2,6 @@ name: Build macOS Universal CLI Binary (Python)
 
 on:
   push:
-    branches:
-      - main # Trigger on push to the main branch
     tags:
       - 'macoscli-v*.*.*' # Trigger on new tags like v1.0.0, v1.0.0-beta, etc.
   workflow_dispatch: # Allows manual trigger from GitHub Actions UI
