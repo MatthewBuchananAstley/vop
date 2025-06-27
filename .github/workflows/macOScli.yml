@@ -1,0 +1,89 @@
+name: Build macOS Universal CLI Binary (Python)
+
+on:
+  push:
+    branches:
+      - main # Trigger on push to the main branch
+    tags:
+      - 'macoscli-v*.*.*' # Trigger on new tags like v1.0.0, v1.0.0-beta, etc.
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  build-macos-universal-binary-python:
+    runs-on: macos-latest # Uses the latest macOS runner, typically Apple Silicon (M1/M2)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # You can adjust the Python version as needed
+
+      - name: Install PyInstaller
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Build vop for Apple Silicon (ARM64)
+        # Build the vop executable for the native ARM64 architecture
+        # --onefile creates a single executable file
+        # --name sets the output executable name
+        run: |
+          # IMPORTANT: Replace "your_vop_script.py" with the actual name of your main Python script (e.g., vop.py)
+          # This script should be at the root of your repository.
+          PY_SCRIPT_NAME="your_vop_script.py"
+          pyinstaller --onefile --name vop-arm64 "${PY_SCRIPT_NAME}"
+        # The output will be in ./dist/vop-arm64
+
+      - name: Build vop for Intel (x86_64) on Apple Silicon runner
+        # Use 'arch -x86_64' to run Python/PyInstaller in Intel emulation mode
+        # --distpath specifies a separate output directory to avoid conflicts
+        run: |
+          # IMPORTANT: Replace "your_vop_script.py" with the actual name of your main Python script (e.g., vop.py)
+          PY_SCRIPT_NAME="your_vop_script.py"
+          arch -x86_64 python3 -m PyInstaller --onefile --name vop-x86_64 "${PY_SCRIPT_NAME}" --distpath dist_x86_64
+        # The output will be in ./dist_x86_64/vop-x86_64
+
+      - name: Create Universal Binary using Lipo
+        # Lipo combines the two architecture-specific binaries into one universal binary
+        run: |
+          # Define the desired name for your final universal executable
+          FINAL_BINARY_NAME="vop-macos-universal"
+
+          # Paths to the compiled binaries for each architecture
+          ARM64_BINARY="dist/vop-arm64"
+          X86_64_BINARY="dist_x86_64/vop-x86_64"
+
+          echo "Creating universal binary from ${ARM64_BINARY} and ${X86_64_BINARY}"
+
+          # Ensure the dist directory exists for the final universal binary
+          mkdir -p dist
+
+          # Use lipo to combine them into the 'dist' directory
+          lipo -create "${ARM64_BINARY}" "${X86_64_BINARY}" -output "dist/${FINAL_BINARY_NAME}"
+
+          # Verify the universal binary
+          file "dist/${FINAL_BINARY_NAME}"
+          ls -lh "dist/${FINAL_BINARY_NAME}"
+
+      - name: Upload Universal Binary artifact
+        # This step is for general artifact storage, useful for debugging or non-release builds
+        uses: actions/upload-artifact@v4
+        with:
+          name: vop-macos-universal-binary-python
+          path: ./dist/vop-macos-universal
+          retention-days: 7
+
+      - name: Create GitHub Release and Upload Asset
+        # This step runs only when a tag is pushed (e.g., v1.0.0)
+        # It creates a new GitHub Release and attaches the universal binary to it.
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/vop-macos-universal # Path to the binary to upload
+          prerelease: ${{ contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
