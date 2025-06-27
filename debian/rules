@@ -24,8 +24,22 @@ override_dh_install:
 	# Dit zal de documentatie .md bestanden behandelen.
 	dh_install
 
-	# Zorg ervoor dat de doelmap voor SBOM bestaat in de staging directory (debian/vop/...).
-	dh_installdirs debian/vop/usr/share/doc/vop/sbom
+	# --- Belangrijke wijziging hier: Gebruik mkdir -p voor de specifieke SBOM doelmap ---
+	# Dit garandeert dat de volledige directory path bestaat BINNEN de debian/vop/ staging directory
+	# voordat 'cp -a' probeert te schrijven.
+	mkdir -p debian/vop/usr/share/doc/vop/sbom
+
+	# --- DEBUGGING VOOR SBOM BESTANDEN ---
+	echo "--- DEBUGGING SBOM FILES BEFORE CP ---"
+	echo "Source file status for manifest.spdx.json:"
+	ls -ld _manifest/spdx_2.2/manifest.spdx.json || echo "Source file manifest.spdx.json NOT FOUND!"
+	echo "Source file content for manifest.spdx.json (first 10 lines):"
+	head _manifest/spdx_2.2/manifest.spdx.json || true # Use || true to avoid failing if file is empty
+	echo "Source file status for manifest.spdx.json.sha256:"
+	ls -ld _manifest/spdx_2.2/manifest.spdx.json.sha256 || echo "Source file manifest.spdx.json.sha256 NOT FOUND!"
+	echo "Source file content for manifest.spdx.json.sha256 (first 10 lines):"
+	head _manifest/spdx_2.2/manifest.spdx.json.sha256 || true
+	echo "--------------------------------------"
 
 	# Kopieer de SBOM bestanden expliciet naar hun eindbestemming en naam.
 	# We gebruiken 'cp' in plaats van 'install' om eventuele ambiguïteit te vermijden
@@ -33,6 +47,14 @@ override_dh_install:
 	# We kopiëren DIRECT naar de uiteindelijke naam.
 	cp -a _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
 	cp -a _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+
+	# --- DEBUGGING NA CP ---
+	echo "--- DEBUGGING SBOM FILES AFTER CP ---"
+	echo "Destination file status for vop.spdx.json:"
+	ls -ld debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+	echo "Destination file status for vop.spdx.json.sha256:"
+	ls -ld debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+	echo "-------------------------------------"
 
 # --- OVERRIDE DH_COMPRESS OM SBOM BESTANDEN UIT TE SLUITEN (OF TE SPECIFICEREN) ---
 # Dit is cruciaal om te voorkomen dat de SBOM bestanden ongewenst gecomprimeerd worden
@@ -55,7 +77,7 @@ override_dh_compress:
 	# Bijvoorbeeld:
 	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
 	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
-         
+ 
 
 # dh_make generated override targets.
 # This is an example for Cmake (see <https://bugs.debian.org/641051>).
