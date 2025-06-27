@@ -20,24 +20,41 @@
 
 # --- NIEUWE TOEVOEGINGEN HIER ---
 override_dh_install:
-	# Roep de standaard dh_install aan om de bestanden uit debian/vop.install te verwerken
-	# Let op: 'dh_install' zal automatisch kijken naar de file 'debian/vop.install'
+	# Roep de standaard dh_install aan om bestanden uit debian/vop.install te verwerken.
+	# Dit zal de documentatie .md bestanden behandelen.
 	dh_install
 
-	# Zorg ervoor dat de doelmap voor SBOM bestaat, voordat we bestanden ernaartoe kopiëren.
-	dh_installdirs usr/share/doc/vop/sbom
+	# Zorg ervoor dat de doelmap voor SBOM bestaat in de staging directory (debian/vop/...).
+	dh_installdirs debian/vop/usr/share/doc/vop/sbom
 
-	# Kopieer de SBOM bestanden expliciet, met hernoeming van bestandsnamen
-	# Gebruik 'install -m 644' om de bestanden met de juiste permissies te kopiëren
-	# naar de tijdelijke installatiedirectory (debian/vop/usr/share/doc/vop/sbom/)
-	# Dit is robuuster dan dh_install voor specifieke hernoemingen in submappen.
-	install -m 644 _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
-	install -m 644 _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+	# Kopieer de SBOM bestanden expliciet naar hun eindbestemming en naam.
+	# We gebruiken 'cp' in plaats van 'install' om eventuele ambiguïteit te vermijden
+	# over of het een bestand of directory moet zijn.
+	# We kopiëren DIRECT naar de uiteindelijke naam.
+	cp -a _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+	cp -a _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
-	# Hernoem de bestanden naar hun uiteindelijke namen binnen de sbom directory.
-	mv debian/vop/usr/share/doc/vop/sbom/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
-	mv debian/vop/usr/share/doc/vop/sbom/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+# --- OVERRIDE DH_COMPRESS OM SBOM BESTANDEN UIT TE SLUITEN (OF TE SPECIFICEREN) ---
+# Dit is cruciaal om te voorkomen dat de SBOM bestanden ongewenst gecomprimeerd worden
+# of om te specificeren hoe ze gecomprimeerd moeten worden.
+override_dh_compress:
+	# Voer de standaard compressie uit voor alle documentatie die dh_compress normaal pakt.
+	# dh_compress zal de .md files comprimeren naar .md.gz
+	dh_compress
 
+	# OPTIE 1 (AANBEVOLEN): Sluit de SBOM bestanden uit van compressie
+	# Verwijder de .gz extensie als dh_compress ze toch per ongeluk pakt,
+	# of zorg ervoor dat ze helemaal niet gecomprimeerd worden.
+	# Als je ze ongecomprimeerd wilt, gebruik dan dit:
+	find debian/vop/usr/share/doc/vop/sbom -name "*.gz" -delete || true
+	# (De '|| true' is om te voorkomen dat de build faalt als er geen .gz bestanden zijn)
+
+	# OF OPTIE 2: Zorg ervoor dat ze gecomprimeerd worden onder hun nieuwe namen (als dat de bedoeling is)
+	# Als je ze juist WEL gecomprimeerd wilt, dan verwijder je de bovenstaande 'find' regel
+	# en zorg je dat ze hier expliciet gecomprimeerd worden als ze dat nog niet zijn.
+	# Bijvoorbeeld:
+	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
          
 
 # dh_make generated override targets.
