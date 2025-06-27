@@ -18,10 +18,28 @@
 %:
 	dh $@
 
+# --- NIEUWE TOEVOEGINGEN HIER ---
+override_dh_install:
+	# Roep de standaard dh_install aan om de bestanden uit debian/vop.install te verwerken
+	# Let op: 'dh_install' zal automatisch kijken naar de file 'debian/vop.install'
+	dh_install
+
+	# Zorg ervoor dat de doelmap voor SBOM bestaat, voordat we bestanden ernaartoe kopiëren.
+	dh_installdirs usr/share/doc/vop/sbom
+
+	# Kopieer de SBOM bestanden expliciet, met hernoeming van bestandsnamen
+	# Gebruik 'install -m 644' om de bestanden met de juiste permissies te kopiëren
+	# naar de tijdelijke installatiedirectory (debian/vop/usr/share/doc/vop/sbom/)
+	# Dit is robuuster dan dh_install voor specifieke hernoemingen in submappen.
+	install -m 644 _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+	install -m 644 _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+
 
 # dh_make generated override targets.
 # This is an example for Cmake (see <https://bugs.debian.org/641051>).
 #override_dh_auto_configure:
 #	dh_auto_configure -- \
 #	-DCMAKE_LIBRARY_PATH=$(DEB_HOST_MULTIARCH)
+
+
 
