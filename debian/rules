@@ -61,23 +61,19 @@ override_dh_install:
 # of om te specificeren hoe ze gecomprimeerd moeten worden.
 override_dh_compress:
 	# Voer de standaard compressie uit voor alle documentatie die dh_compress normaal pakt.
-	# dh_compress zal de .md files comprimeren naar .md.gz
-	dh_compress
+	# Sluit expliciet de SBOM bestanden uit van compressie.
+	dh_compress --exclude=usr/share/doc/vop/sbom/vop.spdx.json --exclude=usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
-	# OPTIE 1 (AANBEVOLEN): Sluit de SBOM bestanden uit van compressie
-	# Verwijder de .gz extensie als dh_compress ze toch per ongeluk pakt,
-	# of zorg ervoor dat ze helemaal niet gecomprimeerd worden.
-	# Als je ze ongecomprimeerd wilt, gebruik dan dit:
-	find debian/vop/usr/share/doc/vop/sbom -name "*.gz" -delete || true
-	# (De '|| true' is om te voorkomen dat de build faalt als er geen .gz bestanden zijn)
+	# --- DEBUGGING NA DH_COMPRESS ---
+	echo "--- DEBUGGING SBOM FILES AFTER DH_COMPRESS ---"
+	# Controleer de inhoud van de SBOM map in de staging directory na compressie
+	ls -l debian/vop/usr/share/doc/vop/sbom/
+	echo "----------------------------------------------"
 
-	# OF OPTIE 2: Zorg ervoor dat ze gecomprimeerd worden onder hun nieuwe namen (als dat de bedoeling is)
-	# Als je ze juist WEL gecomprimeerd wilt, dan verwijder je de bovenstaande 'find' regel
-	# en zorg je dat ze hier expliciet gecomprimeerd worden als ze dat nog niet zijn.
-	# Bijvoorbeeld:
-	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
-	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
- 
+	# OPTIONEEL: Als je ze juist WEL gecomprimeerd wilt, maar onder de juiste namen,
+	# verwijder dan de --exclude van de dh_compress regel hierboven en voeg deze regels toe:
+	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json || true
+	# gzip debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256 || true 
 
 # dh_make generated override targets.
 # This is an example for Cmake (see <https://bugs.debian.org/641051>).
