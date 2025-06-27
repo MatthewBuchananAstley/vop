@@ -34,6 +34,11 @@ override_dh_install:
 	install -m 644 _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
 	install -m 644 _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
+	# Hernoem de bestanden naar hun uiteindelijke namen binnen de sbom directory.
+	mv debian/vop/usr/share/doc/vop/sbom/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+	mv debian/vop/usr/share/doc/vop/sbom/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+
+         
 
 # dh_make generated override targets.
 # This is an example for Cmake (see <https://bugs.debian.org/641051>).
