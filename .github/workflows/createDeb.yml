@@ -20,8 +20,13 @@ jobs:
       contents: write # Permission to write releases
 
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
+      with:
+        egress-policy: audit
+
     - name: Checkout repository
-      uses: actions/checkout@v4 # Haalt de code van je repository op
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Install build dependencies
       run: |
@@ -108,7 +113,7 @@ jobs:
 
 
     - name: Upload Debian package artifact
-      uses: actions/upload-artifact@v4 # Slaat de gegenereerde bestanden op als workflow artifact
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: debian-package-artifacts # Naam van het artifact
         path: |
@@ -137,7 +142,7 @@ jobs:
     - name: Create GitHub Release (on tag push)
       # Deze stap wordt alleen uitgevoerd als de workflow is getriggerd door een tag push
       if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v2 # Een populaire actie voor het maken van GitHub Releases
+      uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
       with:
         # Voeg de artifacts toe aan de release
         files: |
