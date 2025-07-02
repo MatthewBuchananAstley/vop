@@ -13,6 +13,8 @@ on:
     - cron: '43 1 * * 5'
   push:
     branches: [ "main" ]
+    
+  workflow_dispatch: # Enable manual trigger
 
 # Declare default permissions as read only.
 permissions: read-all
