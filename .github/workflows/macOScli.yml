@@ -78,7 +78,7 @@ jobs:
         # This step runs only when a tag is pushed (e.g., v1.0.0)
         # It creates a new GitHub Release and attaches the universal binary to it.
         if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/vop-macos-universal # Path to the binary to upload
