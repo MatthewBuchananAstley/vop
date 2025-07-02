@@ -22,8 +22,13 @@ jobs:
       pull-requests: write  # Essentieel: nodig om Pull Requests te kunnen maken
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
+        with:
+          egress-policy: audit
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install sbom-tool
         run: |
@@ -45,7 +50,7 @@ jobs:
           -nsb "https://github.com/MatthewBuchananAstley/vop"
 
       - name: Auto-commit SPDX SBOM to a new branch and create PR
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           branch: 'the-changes' # Nieuwe branch naam
           commit_message: "chore(sbom): Update SPDX SBOM after change"
@@ -53,7 +58,7 @@ jobs:
           # commit_message: "chore(sbom): Auto-generated SPDX SBOM update (${{ github.run_id }} - $(date +'%Y-%m-%d %H:%M'))"
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }} # Gebruik het ingebouwde GitHub Token
           commit-message: "chore(sbom): Update SPDX SBOM"

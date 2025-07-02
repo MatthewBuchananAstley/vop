@@ -14,8 +14,13 @@ jobs:
       contents: write # Grants permission to create releases and upload assets
 
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@6c439dc8bdf85cadbbce9ed30d1c7b959517bc49 # v2.12.2
+        with:
+          egress-policy: audit
+
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       # --- Step to Create the Source Tarball ---
       - name: Create Source Tarball
@@ -42,7 +47,7 @@ jobs:
       # --- Step to Build RPM package ---
       - name: Build RPM package
         id: rpm_build # ID to reference its outputs
-        uses: naveenrajm7/rpmbuild@master
+        uses: naveenrajm7/rpmbuild@3a7282e96d04bc88ebdeb0ec422569f01b5bfa0a # master
         with:
           spec_file: "vop.spec"
 
@@ -160,7 +165,7 @@ jobs:
 
       # --- Step to Create GitHub Release and Upload Assets ---
       - name: Create Release and Upload Assets
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
