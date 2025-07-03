@@ -33,7 +33,7 @@ jobs:
 
     - name: Install Bandit
       run: |
-        pip install bandit
+        pip install bandit[sarif]
 
     - name: Run Bandit Security Scan
       # Bandit scant standaard de huidige directory (.), tenzij je paden opgeeft.
