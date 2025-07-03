@@ -1,0 +1,55 @@
+name: Bandit Security Scan
+
+on:
+  push:
+    branches:
+      - main
+      - the-changes
+  pull_request:
+    branches:
+      - main
+      
+  # Je kunt ook een schedule toevoegen voor periodieke scans, bijv. wekelijks
+  # schedule:
+      - cron: '30 1 * * 0' # Elke zondag om 01:30 UTC
+
+jobs:
+  bandit_scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x' # Gebruik de gewenste Python versie, bijv. '3.9', '3.10', '3.11'
+
+    - name: Install dependencies (optional, but good practice if your project has them)
+      run: |
+        python -m pip install --upgrade pip
+        # pip install -r requirements.txt # Ontcomment dit als je een requirements.txt hebt
+
+    - name: Install Bandit
+      run: |
+        pip install bandit
+
+    - name: Run Bandit Security Scan
+      # Bandit scant standaard de huidige directory (.), tenzij je paden opgeeft.
+      # -r . staat voor recursive scan van de huidige directory.
+      # -f sarif outputteert in SARIF formaat.
+      # -o bandit-report.sarif slaat de output op in dit bestand.
+      # Je kunt ook meer opties toevoegen, bijv. -ll (low confidence, low severity)
+      run: |
+        bandit -r . -f sarif -o bandit-report.sarif || true
+      # '|| true' zorgt ervoor dat de stap niet faalt als Bandit problemen vindt.
+      # Dit is belangrijk zodat de volgende stap (uploaden van SARIF) altijd wordt uitgevoerd,
+      # zelfs als Bandit bevindingen heeft. GitHub Code Scanning zal de bevindingen tonen.
+
+    - name: Upload Bandit results to GitHub Code Scanning
+      # Dit is de actie die de SARIF-file uploadt naar GitHub's beveiligingsrapporten.
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: bandit-report.sarif
+        # category: bandit # Optioneel: Voeg een categorie toe als je onderscheid wilt maken tussen tools
