@@ -27,7 +27,7 @@ def character_distribution(password: str):
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: ./character_distribution.py <password>")
+        print("Usage: " + sys.argv[0] + " <password> $(./[vop|t3] 100) ")
         sys.exit(1)
     
     password = sys.argv[1]
