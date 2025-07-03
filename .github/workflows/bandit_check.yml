@@ -16,6 +16,9 @@ on:
 jobs:
   bandit_scan:
     runs-on: ubuntu-latest
+    permissions: # <--- ADD THIS SECTION
+      security-events: write # <--- This is the crucial permission
+      contents: read 
 
     steps:
     - name: Checkout repository
