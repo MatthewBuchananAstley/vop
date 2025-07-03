@@ -98,9 +98,13 @@ jobs:
         # Signeer het .deb bestand expliciet
         # --armor genereert een .asc bestand (ASCII-armored signature)
         # Gebruik --detach-sig om een losse signature file te maken
-        echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
+        ##echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
+        ##  --default-key "${{ env.DEB_SIGN_KEYID }}" \
+        ##  --armor --detach-sig "$DEB_FILE"
+        gpg --batch --pinentry-mode loopback --passphrase-fd 0 \
           --default-key "${{ env.DEB_SIGN_KEYID }}" \
           --armor --detach-sig "$DEB_FILE"
+      
         echo "Successfully signed $DEB_FILE, creating ${DEB_FILE}.asc"`
       # Zorg ervoor dat dit de root van je project is, of de directory die de 'debian/' map bevat.
       # Meestal is dit de root van de repo.
