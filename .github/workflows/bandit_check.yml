@@ -10,7 +10,7 @@ on:
       - main
       
   # Je kunt ook een schedule toevoegen voor periodieke scans, bijv. wekelijks
-  # schedule:
+  schedule:
       - cron: '30 1 * * 0' # Elke zondag om 01:30 UTC
 
 jobs:
