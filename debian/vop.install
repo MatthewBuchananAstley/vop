@@ -6,10 +6,10 @@ vop.py usr/bin/
 pw usr/bin/
 t3 usr/bin/
 t3.py usr/bin/
-Chi-square_test.py usr/bin/
-Kolmogorov-Smirnov-test.py usr/bin/
-Password_entropy_verifier.py usr/bin/
-shannon_entropy.py usr/bin/
+#Chi-square_test.py usr/bin/
+#Kolmogorov-Smirnov-test.py usr/bin/
+#Password_entropy_verifier.py usr/bin/
+#shannon_entropy.py usr/bin/
 
 # Documentatie
 CHANGELOG.md usr/share/doc/vop/
