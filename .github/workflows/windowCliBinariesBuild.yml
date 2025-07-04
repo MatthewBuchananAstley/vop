@@ -53,10 +53,19 @@ jobs:
       run: Move-Item dist\t3.exe executables\t3.exe
       shell: pwsh
 
+    - name: Ensure GPG is available
+      run: |
+        if (-not (Get-Command gpg -ErrorAction SilentlyContinue)) {
+          choco install gnupg
+        } else {
+          Write-Host "GPG is already installed."
+        }
+      shell: pwsh
+      
     # --- Configureer en Signeer GPG ---
     - name: Configure GPG for signing
       run: |
-        choco install gnupg
+        #choco install gnupg
         Write-Host "GPG Geïnstalleerd."
         echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | gpg --batch --import
         Write-Host "GPG private sleutel geïmporteerd."
