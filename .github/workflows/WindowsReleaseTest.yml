@@ -1,0 +1,127 @@
+# .github/workflows/verify-and-test-release.yml
+name: Verify and Test Windows Release Executables
+
+on:
+  release: # Deze workflow triggert automatisch wanneer een nieuwe GitHub Release wordt gepubliceerd
+    types: [published]
+  workflow_dispatch: # Optie om handmatig te triggeren
+
+jobs:
+  verify-and-test:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository # Nodig om de GPG verificatie instructies/sleutel te kunnen benaderen, of andere test scripts
+      uses: actions/checkout@v4
+
+    - name: Download Release Assets # Stap 1: Download alle bestanden van de zojuist gepubliceerde release
+      uses: robinraju/release-assets-downloader@v6.0
+      with:
+        repository: ${{ github.repository }}
+        tag: ${{ github.event.release.tag_name }}
+        # Exclude patterns zijn optioneel als je niet alles wilt downloaden
+        # exclude: "*-asc" # Voorbeeld: download geen asc bestanden, tenzij je ze apart wilt verwerken
+        # target_path: ./release_files # Optioneel: download naar een specifieke submap
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Vereist om toegang te krijgen tot private repositories of rate limits te verhogen
+
+    - name: Configure GPG for Verification # Stap 2: Configureer GPG voor verificatie
+      run: |
+        Write-Host "Start GPG configuratie voor verificatie."
+        $publicKeyId = "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE" # Uw publieke sleutel ID
+
+        # Probeer publieke sleutel op te halen van een keyserver
+        Write-Host "Poging om publieke GPG sleutel te importeren (ID: $publicKeyId)..."
+        try {
+            gpg --keyserver hkps://keys.openpgp.org --recv-keys $publicKeyId
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "Waarschuwing: Keyserver import mislukt, probeer alternatieve import."
+                # Als keyserver niet werkt, importeert u de sleutel handmatig (pas dit aan als uw sleutel verandert)
+                $publicKeyContent = @"
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+[PLAATS HIER DE WERKELIJKE INHOUD VAN UW PUBLIEKE GPG-SLEUTEL]
+-----END PGP PUBLIC KEY BLOCK-----
+"@
+                $publicKeyContent | Out-File -FilePath "release_public_key.asc" -Encoding ascii
+                gpg --import "release_public_key.asc"
+            }
+        } catch {
+            Write-Host "Fout bij keyserver import: $($_.Exception.Message)"
+            # Fallback naar handmatige import
+            $publicKeyContent = @"
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+[PLAATS HIER DE WERKELIJKE INHOUD VAN UW PUBLIEKE GPG-SLEUTEL]
+-----END PGP PUBLIC KEY BLOCK-----
+"@
+            $publicKeyContent | Out-File -FilePath "release_public_key.asc" -Encoding ascii
+            gpg --import "release_public_key.asc"
+        }
+
+        # Optioneel: Vertrouw de sleutel zodat GPG geen waarschuwingen geeft over onvertrouwde handtekeningen
+        # Alleen nodig als de sleutel nog niet in de trusted store van de runner zit
+        # gpg --batch --yes --edit-key $publicKeyId trust quit
+        Write-Host "GPG configuratie voltooid."
+      shell: pwsh
+
+    - name: Verify GPG Signatures # Stap 3: Verifieer de GPG-handtekeningen van alle gedownloade executables
+      run: |
+        $filesToVerify = @(
+            "Password_entropy_verifier.exe",
+            "vop.exe",
+            "t3.exe"
+        )
+
+        foreach ($file in $filesToVerify) {
+            $signatureFile = "$file.asc"
+            Write-Host "Verifiëren van $file met handtekening $signatureFile..."
+            try {
+                gpg --verify $signatureFile $file
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Host "Succesvolle GPG verificatie voor $file."
+                } else {
+                    throw "GPG verificatie mislukt voor $file. Exit code: $LASTEXITCODE."
+                }
+            } catch {
+                throw "Fout tijdens GPG verificatie voor $file: $($_.Exception.Message)"
+            }
+        }
+      shell: pwsh
+
+    - name: Test Executables # Stap 4: Voer de gedownloade executables uit en test hun functionaliteit
+      run: |
+        Write-Host "Start functionele tests voor executables..."
+
+        # Test Password_entropy_verifier.exe
+        Write-Host "Testen van Password_entropy_verifier.exe..."
+        $passOutput = & "Password_entropy_verifier.exe" # Voer zonder argumenten uit
+        # Controleer of de output een verwachte string bevat, of dat het gewoon succesvol draait
+        if ($LASTEXITCODE -ne 0) {
+            throw "Password_entropy_verifier.exe afgesloten met foutcode $LASTEXITCODE. Output: $($passOutput | Out-String)"
+        }
+        Write-Host "Password_entropy_verifier.exe succesvol uitgevoerd (Exit Code 0)."
+
+        # Test vop.exe
+        Write-Host "Testen van vop.exe..."
+        $vopOutput = & "vop.exe"
+        if ($LASTEXITCODE -ne 0) {
+            throw "vop.exe afgesloten met foutcode $LASTEXITCODE. Output: $($vopOutput | Out-String)"
+        }
+        Write-Host "vop.exe succesvol uitgevoerd (Exit Code 0)."
+
+        # Test t3.exe
+        Write-Host "Testen van t3.exe..."
+        $t3Output = & "t3.exe"
+        if ($LASTEXITCODE -ne 0) {
+            throw "t3.exe afgesloten met foutcode $LASTEXITCODE. Output: $($t3Output | Out-String)"
+        }
+        Write-Host "t3.exe succesvol uitgevoerd (Exit Code 0)."
+
+        # --- Optioneel: Voeg hier meer specifieke tests toe per executable ---
+        # Bijvoorbeeld voor Password_entropy_verifier.exe met een testwachtwoord
+        # $passwordTestOutput = & "Password_entropy_verifier.exe" "SterkWachtwoord123!" | Out-String
+        # if ($passwordTestOutput -notlike "*Sterkte: Sterk*") {
+        #    throw "Password_entropy_verifier.exe gaf onverwachte output voor testwachtwoord."
+        # }
+
+        Write-Host "Alle executables succesvol geverifieerd en getest!"
+      shell: pwsh
