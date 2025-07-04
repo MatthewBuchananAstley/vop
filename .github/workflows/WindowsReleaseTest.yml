@@ -166,8 +166,7 @@ jobs:
                     throw "GPG verificatie mislukt voor $file. Exit code: $LASTEXITCODE."
                 }
             } catch {
-                
-                throw "Fout tijdens GPG verificatie voor $file: $(${$_.Exception.Message})"
+                throw "Fout tijdens GPG verificatie voor ${ $file} : $(${$_.Exception.Message})"
             }
         }
       shell: pwsh
