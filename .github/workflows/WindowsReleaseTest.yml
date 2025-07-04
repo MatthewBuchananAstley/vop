@@ -13,16 +13,49 @@ jobs:
     - name: Checkout repository # Nodig om de GPG verificatie instructies/sleutel te kunnen benaderen, of andere test scripts
       uses: actions/checkout@v4
 
-    - name: Download Release Assets # Stap 1: Download alle bestanden van de zojuist gepubliceerde release
-      uses: robinraju/release-assets-downloader@v6.0
-      with:
-        repository: ${{ github.repository }}
-        tag: ${{ github.event.release.tag_name }}
-        # Exclude patterns zijn optioneel als je niet alles wilt downloaden
-        # exclude: "*-asc" # Voorbeeld: download geen asc bestanden, tenzij je ze apart wilt verwerken
-        # target_path: ./release_files # Optioneel: download naar een specifieke submap
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Vereist om toegang te krijgen tot private repositories of rate limits te verhogen
+    - name: Download Release Assets # Stap 1: Download de bestanden van de zojuist gepubliceerde release
+      run: |
+        $releaseAssets = "${{ toJson(github.event.release.assets) }}" | ConvertFrom-Json
+
+        # Lijst van bestanden die we verwachten te downloaden
+        $expectedFiles = @(
+            "Password_entropy_verifier.exe",
+            "Password_entropy_verifier.exe.asc",
+            "vop.exe",
+            "vop.exe.asc",
+            "t3.exe",
+            "t3.exe.asc"
+        )
+
+        # Base URL voor het downloaden van assets (vereist authenticatie voor private repos)
+        $downloadHeaders = @{
+            "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
+            "Accept" = "application/octet-stream"
+        }
+
+        Write-Host "Downloading assets from release tag: ${{ github.event.release.tag_name }}"
+        foreach ($asset in $releaseAssets) {
+            if ($expectedFiles -contains $asset.name) {
+                Write-Host "Downloading $($asset.name) from $($asset.browser_download_url)..."
+                try {
+                    Invoke-WebRequest -Uri $asset.url -Headers $downloadHeaders -OutFile $asset.name -UseBasicParsing -ErrorAction Stop
+                    Write-Host "$($asset.name) downloaded successfully."
+                } catch {
+                    throw "Failed to download $($asset.name): $($_.Exception.Message)"
+                }
+            } else {
+                Write-Host "Skipping unexpected asset: $($asset.name)"
+            }
+        }
+
+        # Controleer of alle verwachte bestanden zijn gedownload
+        foreach ($file in $expectedFiles) {
+            if (-not (Test-Path $file)) {
+                throw "Error: Expected file '$file' was not downloaded."
+            }
+        }
+        Write-Host "All expected assets downloaded."
+      shell: pwsh
 
     - name: Configure GPG for Verification # Stap 2: Configureer GPG voor verificatie
       run: |
