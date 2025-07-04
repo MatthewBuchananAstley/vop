@@ -5,10 +5,10 @@ on:
     branches:
       - main
       - the-changes
-  pull_request:
-    branches:
-      - main
-      
+  #pull_request:
+  #  branches:
+  #    - main
+  workflow_dispatch: # Optie om handmatig te triggeren
   # Je kunt ook een schedule toevoegen voor periodieke scans, bijv. wekelijks
   schedule:
       - cron: '30 1 * * 0' # Elke zondag om 01:30 UTC
