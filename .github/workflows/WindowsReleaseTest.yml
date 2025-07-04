@@ -36,22 +36,14 @@ jobs:
             if ($LASTEXITCODE -ne 0) {
                 Write-Host "Waarschuwing: Keyserver import mislukt, probeer alternatieve import."
                 # Als keyserver niet werkt, importeert u de sleutel handmatig (pas dit aan als uw sleutel verandert)
-                $publicKeyContent = @"
------BEGIN PGP PUBLIC KEY BLOCK-----
-[PLAATS HIER DE WERKELIJKE INHOUD VAN UW PUBLIEKE GPG-SLEUTEL]
------END PGP PUBLIC KEY BLOCK-----
-"@
+                # $publicKeyContent = "Public-key block" 
                 $publicKeyContent | Out-File -FilePath "release_public_key.asc" -Encoding ascii
                 gpg --import "release_public_key.asc"
             }
         } catch {
             Write-Host "Fout bij keyserver import: $($_.Exception.Message)"
             # Fallback naar handmatige import
-            $publicKeyContent = @"
------BEGIN PGP PUBLIC KEY BLOCK-----
-[PLAATS HIER DE WERKELIJKE INHOUD VAN UW PUBLIEKE GPG-SLEUTEL]
------END PGP PUBLIC KEY BLOCK-----
-"@
+            #$publicKeyContent = "Public-key block"
             $publicKeyContent | Out-File -FilePath "release_public_key.asc" -Encoding ascii
             gpg --import "release_public_key.asc"
         }
