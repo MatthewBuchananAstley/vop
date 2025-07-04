@@ -88,7 +88,8 @@ jobs:
         Write-Host "Einde controle geheime sleutels."
 
         # Save the passphrase to a temporary file and set restrictive permissions
-        echo "${{ secrets.GPG_PASSPHRASE }}" > gpg_passphrase.txt
+        #echo "${{ secrets.GPG_PASSPHRASE }}" > gpg_passphrase.txt
+        Set-Content -NoNewline -Encoding ascii -Value "${{ secrets.GPG_PASSPHRASE }}" gpg_passphrase.txt # Perhaps an extra "\n" is the culprit
         icacls gpg_passphrase.txt /inheritance:d
         icacls gpg_passphrase.txt /grant:r "$($env:USERNAME):(R)"
         icacls gpg_passphrase.txt /deny "Everyone:(R,W,D)"
