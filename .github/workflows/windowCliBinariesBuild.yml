@@ -127,3 +127,39 @@ jobs:
         name: windows-executables-and-signatures
         path: executables/ # Upload de hele map met alle .exe en .asc bestanden
         retention-days: 7 # Hoe lang de artifacts bewaard moeten blijven
+
+        ## Create GitHub Release
+
+    - name: Create GitHub Release
+      id: create_release # Unieke ID voor deze stap
+      uses: softprops/action-gh-release@v2 # Gebruik de softprops actie voor releases
+      with:
+        # Dynamische tagnaam gebaseerd op de datum en het runnummer
+        tag_name: windows-release-${{ format('{0:yyyyMMdd}', github.run_started_at) }}-${{ github.run_number }}
+        name: Windows Executables Release ${{ format('{0:yyyyMMdd}', github.run_started_at) }} Build ${{ github.run_number }}
+        body: |
+          Automatische release van Windows executables.
+
+          Deze release bevat de volgende bestanden, GPG gesigneerd:
+          - vop.exe
+          - t3.exe
+          - Password_entropy_verifier.exe
+
+          Details:
+          * Builddatum: ${{ format('{0:yyyy-MM-dd}', github.run_started_at) }}
+          * Workflow Run ID: ${{ github.run_id }}
+          * Workflow Run Nummer: ${{ github.run_number }}
+
+        # Geef de paden op van de bestanden die moeten worden geüpload als release assets
+        files: |
+          executables/vop.exe
+          executables/t3.exe
+          executables/Password_entropy_verifier.exe
+          executables/vop.exe.asc
+          executables/t3.exe.asc
+          executables/Password_entropy_verifier.exe.asc
+
+        prerelease: false # Zet op true als dit een pre-release is
+        generate_release_notes: false # Zet op true om automatisch releasenotes te genereren op basis van commit history
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # De GITHUB_TOKEN is vereist voor deze actie
