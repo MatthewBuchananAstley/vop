@@ -23,6 +23,7 @@ jobs:
 
     - name: Download Release Assets # Stap 1: Download de bestanden van de zojuist gepubliceerde release
       run: |
+        Write-Host "github.event.release_assets: ${{ github.event.release.assets }}" 
         $releaseAssets = "${{ toJson(github.event.release.assets) }}" | ConvertFrom-Json
 
         # Lijst van bestanden die we verwachten te downloaden
