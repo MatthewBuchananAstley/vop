@@ -135,8 +135,9 @@ jobs:
       uses: softprops/action-gh-release@v2 # Gebruik de softprops actie voor releases
       with:
         # Dynamische tagnaam gebaseerd op de datum en het runnummer
-        tag_name: windows-release-${{ format('{0:yyyyMMdd}', github.run_started_at) }}-${{ github.run_number }}
-        name: Windows Executables Release ${{ format('{0:yyyyMMdd}', github.run_started_at) }} Build ${{ github.run_number }}
+        tag_name: ${{ github.ref_name }} # Bijv. windows-v1.4.0
+        # Gebruik de volledige tagnaam in de titel van de release
+        name: Windows Executables Release ${{ github.ref_name }}
         body: |
           Automatische release van Windows executables.
 
@@ -146,7 +147,7 @@ jobs:
           - Password_entropy_verifier.exe
 
           Details:
-          * Builddatum: ${{ format('{0:yyyy-MM-dd}', github.run_started_at) }}
+          * Builddatum: ${{ github.run_started_at) }}
           * Workflow Run ID: ${{ github.run_id }}
           * Workflow Run Nummer: ${{ github.run_number }}
 
