@@ -65,22 +65,20 @@ jobs:
     # --- Configureer en Signeer GPG ---
     - name: Configure GPG for signing
       run: |
-        Write-Host "Start GPG configuratie."
+       Write-Host "Start GPG configuratie."
 
-        # Decode base64 secret to byte array using PowerShell's .NET methods
-        $privateKeyBytes = [System.Convert]::FromBase64String("${{ secrets.GPG_PRIVATE_KEY }}")
-
-        # Write byte array to a temporary file
+        # Schrijf de ASCII-armored private sleutel direct naar een tijdelijk bestand
+        # (Het secret GPG_PRIVATE_KEY bevat nu de ruwe ASCII-armored tekst)
         $tempKeyFile = "private_key_temp.asc"
-        [System.IO.File]::WriteAllBytes($tempKeyFile, $privateKeyBytes)
+        "${{ secrets.GPG_PRIVATE_KEY }}" | Out-File -FilePath $tempKeyFile -Encoding ascii
         Write-Host "Tijdelijk private sleutelbestand '$tempKeyFile' aangemaakt."
 
-        # Import the GPG key from the temporary file
-        # Use --pinentry-mode loopback to ensure non-interactive import
+        # Importeer de GPG sleutel vanuit het tijdelijke bestand
+        # --pinentry-mode loopback is hier nog steeds cruciaal voor non-interactieve input van de passphrase
         gpg --batch --import --pinentry-mode loopback $tempKeyFile
         Write-Host "GPG private sleutel import poging voltooid."
 
-        # Clean up the temporary key file immediately after import for security
+        # Verwijder het tijdelijke sleutelbestand direct na import voor veiligheid
         Remove-Item $tempKeyFile
         Write-Host "Tijdelijk private sleutelbestand verwijderd."
 
