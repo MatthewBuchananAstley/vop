@@ -4,10 +4,18 @@ on:
   release: # Deze workflow triggert automatisch wanneer een nieuwe GitHub Release wordt gepubliceerd
     types: [published]
   workflow_dispatch: # Optie om handmatig te triggeren
+    inputs: # Voeg deze 'inputs' sectie toe
+      release_tag: # De naam van de input
+        description: windows-v1.4.0 #'De tag van de release om te verifiëren (bijv. windows-v1.4.0)'
+        required: true # De gebruiker moet een waarde opgeven
+        default: 'windows-v1.4.0'
+  
 
 jobs:
   verify-and-test:
     runs-on: windows-latest
+    permissions:
+      contents: read
 
     steps:
     - name: Checkout repository # Nodig om de GPG verificatie instructies/sleutel te kunnen benaderen, of andere test scripts
