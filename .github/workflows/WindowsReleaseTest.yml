@@ -155,17 +155,19 @@ jobs:
         )
 
         foreach ($file in $filesToVerify) {
+            Write-Host "$file"
             $signatureFile = "$file.asc"
             Write-Host "Verifiëren van $file met handtekening $signatureFile..."
             try {
-                gpg --verify $signatureFile $file
+                gpg --verify $signatureFile
                 if ($LASTEXITCODE -eq 0) {
                     Write-Host "Succesvolle GPG verificatie voor $file."
                 } else {
                     throw "GPG verificatie mislukt voor $file. Exit code: $LASTEXITCODE."
                 }
             } catch {
-                throw "Fout tijdens GPG verificatie voor $file: $($_.Exception.Message)"
+                
+                throw "Fout tijdens GPG verificatie voor $file: $(${$_.Exception.Message})"
             }
         }
       shell: pwsh
