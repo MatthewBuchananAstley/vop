@@ -177,7 +177,7 @@ jobs:
 
         # Test Password_entropy_verifier.exe
         Write-Host "Testen van Password_entropy_verifier.exe..."
-        $passOutput = & "Password_entropy_verifier.exe" # Voer zonder argumenten uit
+        $passOutput = & .\\Password_entropy_verifier.exe # Voer zonder argumenten uit
         # Controleer of de output een verwachte string bevat, of dat het gewoon succesvol draait
         if ($LASTEXITCODE -ne 0) {
             throw "Password_entropy_verifier.exe afgesloten met foutcode $LASTEXITCODE. Output: $($passOutput | Out-String)"
@@ -186,7 +186,7 @@ jobs:
 
         # Test vop.exe
         Write-Host "Testen van vop.exe..."
-        $vopOutput = & "vop.exe"
+        $vopOutput = & .\\vop.exe
         if ($LASTEXITCODE -ne 0) {
             throw "vop.exe afgesloten met foutcode $LASTEXITCODE. Output: $($vopOutput | Out-String)"
         }
@@ -194,7 +194,7 @@ jobs:
 
         # Test t3.exe
         Write-Host "Testen van t3.exe..."
-        $t3Output = & "t3.exe"
+        $t3Output = & .\\t3.exe
         if ($LASTEXITCODE -ne 0) {
             throw "t3.exe afgesloten met foutcode $LASTEXITCODE. Output: $($t3Output | Out-String)"
         }
@@ -202,10 +202,11 @@ jobs:
 
         # --- Optioneel: Voeg hier meer specifieke tests toe per executable ---
         # Bijvoorbeeld voor Password_entropy_verifier.exe met een testwachtwoord
-        # $passwordTestOutput = & "Password_entropy_verifier.exe" "SterkWachtwoord123!" | Out-String
-        # if ($passwordTestOutput -notlike "*Sterkte: Sterk*") {
-        #    throw "Password_entropy_verifier.exe gaf onverwachte output voor testwachtwoord."
-        # }
+        $passwordTestOutput = & .\\Password_entropy_verifier.exe "SterkWachtwoord123!" | Out-String
+        #if ($passwordTestOutput -notlike "*Sterkte: Sterk*") {
+        #   throw "Password_entropy_verifier.exe gaf onverwachte output voor testwachtwoord."
+        #}
+        Write-Host: $passwordTestOutput
 
         Write-Host "Alle executables succesvol geverifieerd en getest!"
       shell: pwsh
