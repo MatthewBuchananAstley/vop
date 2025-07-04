@@ -117,7 +117,7 @@ jobs:
 
     - name: Clean up PyInstaller build files
       run: |
-        Remove-Item -Recurse -Force dist/ build/
+        Remove-Item -Recurse -Force dist/, build/
         Remove-Item gpg_passphrase.txt
       shell: pwsh
 
