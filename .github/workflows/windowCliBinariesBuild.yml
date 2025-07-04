@@ -65,10 +65,31 @@ jobs:
     # --- Configureer en Signeer GPG ---
     - name: Configure GPG for signing
       run: |
-        #choco install gnupg
-        Write-Host "GPG Geïnstalleerd."
-        echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d | gpg --batch --import
-        Write-Host "GPG private sleutel geïmporteerd."
+        Write-Host "Start GPG configuratie."
+
+        # Decode base64 secret to byte array using PowerShell's .NET methods
+        $privateKeyBytes = [System.Convert]::FromBase64String("${{ secrets.GPG_PRIVATE_KEY }}")
+
+        # Write byte array to a temporary file
+        $tempKeyFile = "private_key_temp.asc"
+        [System.IO.File]::WriteAllBytes($tempKeyFile, $privateKeyBytes)
+        Write-Host "Tijdelijk private sleutelbestand '$tempKeyFile' aangemaakt."
+
+        # Import the GPG key from the temporary file
+        # Use --pinentry-mode loopback to ensure non-interactive import
+        gpg --batch --import --pinentry-mode loopback $tempKeyFile
+        Write-Host "GPG private sleutel import poging voltooid."
+
+        # Clean up the temporary key file immediately after import for security
+        Remove-Item $tempKeyFile
+        Write-Host "Tijdelijk private sleutelbestand verwijderd."
+
+        # Check if the key was successfully imported
+        Write-Host "Controleer geïmporteerde geheime sleutels..."
+        gpg --list-secret-keys --keyid-format LONG
+        Write-Host "Einde controle geheime sleutels."
+
+        # Save the passphrase to a temporary file and set restrictive permissions
         echo "${{ secrets.GPG_PASSPHRASE }}" > gpg_passphrase.txt
         icacls gpg_passphrase.txt /inheritance:d
         icacls gpg_passphrase.txt /grant:r "$($env:USERNAME):(R)"
