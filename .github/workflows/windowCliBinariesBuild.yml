@@ -147,7 +147,7 @@ jobs:
           - Password_entropy_verifier.exe
 
           Details:
-          * Builddatum: ${{ github.run_started_at) }}
+          * Builddatum: ${{ github.run_started_at }}
           * Workflow Run ID: ${{ github.run_id }}
           * Workflow Run Nummer: ${{ github.run_number }}
 
