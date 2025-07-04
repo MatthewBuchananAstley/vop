@@ -1,4 +1,3 @@
-# .github/workflows/verify-and-test-release.yml
 name: Verify and Test Windows Release Executables
 
 on:
