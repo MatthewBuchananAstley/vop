@@ -19,56 +19,56 @@
 	dh $@
 
 # --- NIEUWE TOEVOEGINGEN HIER ---
-override_dh_install:
+##override_dh_install:
 	# Roep de standaard dh_install aan om bestanden uit debian/vop.install te verwerken.
 	# Dit zal de documentatie .md bestanden behandelen.
-	dh_install
+##	dh_install
 
 	# --- Belangrijke wijziging hier: Gebruik mkdir -p voor de specifieke SBOM doelmap ---
 	# Dit garandeert dat de volledige directory path bestaat BINNEN de debian/vop/ staging directory
 	# voordat 'cp -a' probeert te schrijven.
-	mkdir -p debian/vop/usr/share/doc/vop/sbom
+##	mkdir -p debian/vop/usr/share/doc/vop/sbom
 
 	# --- DEBUGGING VOOR SBOM BESTANDEN ---
-	echo "--- DEBUGGING SBOM FILES BEFORE CP ---"
-	echo "Source file status for manifest.spdx.json:"
-	ls -ld _manifest/spdx_2.2/manifest.spdx.json || echo "Source file manifest.spdx.json NOT FOUND!"
-	echo "Source file content for manifest.spdx.json (first 10 lines):"
-	head _manifest/spdx_2.2/manifest.spdx.json || true # Use || true to avoid failing if file is empty
-	echo "Source file status for manifest.spdx.json.sha256:"
-	ls -ld _manifest/spdx_2.2/manifest.spdx.json.sha256 || echo "Source file manifest.spdx.json.sha256 NOT FOUND!"
-	echo "Source file content for manifest.spdx.json.sha256 (first 10 lines):"
-	head _manifest/spdx_2.2/manifest.spdx.json.sha256 || true
-	echo "--------------------------------------"
+##	echo "--- DEBUGGING SBOM FILES BEFORE CP ---"
+##	echo "Source file status for manifest.spdx.json:"
+##	ls -ld _manifest/spdx_2.2/manifest.spdx.json || echo "Source file manifest.spdx.json NOT FOUND!"
+##	echo "Source file content for manifest.spdx.json (first 10 lines):"
+##	head _manifest/spdx_2.2/manifest.spdx.json || true # Use || true to avoid failing if file is empty
+##	echo "Source file status for manifest.spdx.json.sha256:"
+##	ls -ld _manifest/spdx_2.2/manifest.spdx.json.sha256 || echo "Source file manifest.spdx.json.sha256 NOT FOUND!"
+##	echo "Source file content for manifest.spdx.json.sha256 (first 10 lines):"
+##	head _manifest/spdx_2.2/manifest.spdx.json.sha256 || true
+##	echo "--------------------------------------"
 
 	# Kopieer de SBOM bestanden expliciet naar hun eindbestemming en naam.
 	# We gebruiken 'cp' in plaats van 'install' om eventuele ambiguïteit te vermijden
 	# over of het een bestand of directory moet zijn.
 	# We kopiëren DIRECT naar de uiteindelijke naam.
-	cp -a _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
-	cp -a _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+##	cp -a _manifest/spdx_2.2/manifest.spdx.json debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+##	cp -a _manifest/spdx_2.2/manifest.spdx.json.sha256 debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
 	# --- DEBUGGING NA CP ---
-	echo "--- DEBUGGING SBOM FILES AFTER CP ---"
-	echo "Destination file status for vop.spdx.json:"
-	ls -ld debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
-	echo "Destination file status for vop.spdx.json.sha256:"
-	ls -ld debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
-	echo "-------------------------------------"
+##	echo "--- DEBUGGING SBOM FILES AFTER CP ---"
+##	echo "Destination file status for vop.spdx.json:"
+##	ls -ld debian/vop/usr/share/doc/vop/sbom/vop.spdx.json
+##	echo "Destination file status for vop.spdx.json.sha256:"
+##	ls -ld debian/vop/usr/share/doc/vop/sbom/vop.spdx.json.sha256
+##	echo "-------------------------------------"
 
 # --- OVERRIDE DH_COMPRESS OM SBOM BESTANDEN UIT TE SLUITEN (OF TE SPECIFICEREN) ---
 # Dit is cruciaal om te voorkomen dat de SBOM bestanden ongewenst gecomprimeerd worden
 # of om te specificeren hoe ze gecomprimeerd moeten worden.
-override_dh_compress:
+##override_dh_compress:
 	# Voer de standaard compressie uit voor alle documentatie die dh_compress normaal pakt.
 	# Sluit expliciet de SBOM bestanden uit van compressie.
-	dh_compress --exclude=usr/share/doc/vop/sbom/vop.spdx.json --exclude=usr/share/doc/vop/sbom/vop.spdx.json.sha256
+##	dh_compress --exclude=usr/share/doc/vop/sbom/vop.spdx.json --exclude=usr/share/doc/vop/sbom/vop.spdx.json.sha256
 
 	# --- DEBUGGING NA DH_COMPRESS ---
-	echo "--- DEBUGGING SBOM FILES AFTER DH_COMPRESS ---"
+##	echo "--- DEBUGGING SBOM FILES AFTER DH_COMPRESS ---"
 	# Controleer de inhoud van de SBOM map in de staging directory na compressie
-	ls -l debian/vop/usr/share/doc/vop/sbom/
-	echo "----------------------------------------------"
+##	ls -l debian/vop/usr/share/doc/vop/sbom/
+##	echo "----------------------------------------------"
 
 	# OPTIONEEL: Als je ze juist WEL gecomprimeerd wilt, maar onder de juiste namen,
 	# verwijder dan de --exclude van de dh_compress regel hierboven en voeg deze regels toe:
