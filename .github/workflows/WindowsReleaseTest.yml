@@ -1,0 +1,212 @@
+name: Verify and Test Windows Release Executables
+
+on:
+  release: # Deze workflow triggert automatisch wanneer een nieuwe GitHub Release wordt gepubliceerd
+    types: [published]
+  workflow_dispatch: # Optie om handmatig te triggeren
+    inputs: # Voeg deze 'inputs' sectie toe
+      release_tag: # De naam van de input
+        description: windows-v1.4.0 #'De tag van de release om te verifiëren (bijv. windows-v1.4.0)'
+        required: true # De gebruiker moet een waarde opgeven
+        default: 'windows-v1.4.0'
+  
+
+jobs:
+  verify-and-test:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Checkout repository # Nodig om de GPG verificatie instructies/sleutel te kunnen benaderen, of andere test scripts
+      uses: actions/checkout@v4
+
+  
+    - name: Download Release Assets # AANGEPASTE STAP
+      run: |
+        $releaseAssets = $null
+        $releaseTag = ""
+
+        Write-Host "Workflow triggered by: ${{ github.event_name }}"
+
+        if ("${{ github.event_name }}" -eq "release") {
+            Write-Host "Triggered by 'release' event. Using release info from event payload."
+            $releaseAssets = "${{ toJson(github.event.release.assets) }}" | ConvertFrom-Json
+            $releaseTag = "${{ github.event.release.tag_name }}"
+            Write-Host "Release Tag from event: $releaseTag"
+            Write-Host "Assets from event: $($releaseAssets | ConvertTo-Json -Depth 5)" # Log de asset-data
+        }
+        elseif ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            Write-Host "Triggered by 'workflow_dispatch'. Using 'release_tag' input."
+            $releaseTag = "${{ github.event.inputs.release_tag }}"
+            Write-Host "Resolved release tag from input: $releaseTag"
+
+            if (-not $releaseTag) {
+                throw "Fout: 'release_tag' input is leeg bij handmatige start."
+            }
+
+            $apiUrl = "${{ github.api_url }}/repos/${{ github.repository }}/releases/tags/$releaseTag"
+            Write-Host "Fetching release details from API URL: $apiUrl"
+
+            try {
+                $releaseInfo = Invoke-RestMethod -Uri $apiUrl -Headers @{
+                    "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
+                    "Accept" = "application/vnd.github.v3+json"
+                } -ErrorAction Stop
+
+                $releaseAssets = $releaseInfo.assets # De assets zijn al een PowerShell object hier
+                Write-Host "Successfully fetched assets for tag '$releaseTag' via API."
+                Write-Host "Assets fetched from API: $($releaseAssets | ConvertTo-Json -Depth 5)" # Log de asset-data
+
+            } catch {
+                throw "FAILED to fetch release details for tag '$releaseTag' from API. Error: $($_.Exception.Message). Check if the tag exists and is public (or if GITHUB_TOKEN has access)."
+            }
+        } else {
+            throw "Workflow triggered by unsupported event: ${{ github.event_name }}. Only 'release' or 'workflow_dispatch' are supported for this job."
+        }
+
+        if (-not $releaseTag) {
+            throw "Fout: Geen releasetag beschikbaar om assets te downloaden na event-verwerking."
+        }
+        if (-not $releaseAssets -or $releaseAssets.Count -eq 0) {
+            Write-Warning "Geen assets gevonden voor release tag: $releaseTag. Dit kan betekenen dat de tag niet bestaat, geen assets heeft, of dat de API-aanroep mislukte."
+            throw "Geen assets gevonden of gedownload. Workflow kan niet verder."
+        }
+
+        # De rest van de stap blijft hetzelfde
+        $expectedFiles = @(
+            "Password_entropy_verifier.exe",
+            "Password_entropy_verifier.exe.asc",
+            "vop.exe",
+            "vop.exe.asc",
+            "t3.exe",
+            "t3.exe.asc"
+        )
+
+        $downloadHeaders = @{
+            "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
+            "Accept" = "application/octet-stream"
+        }
+
+        Write-Host "Beginnen met downloaden van verwachte assets van release tag: $releaseTag"
+        foreach ($asset in $releaseAssets) {
+            # Zorg ervoor dat $asset.name en $asset.url bestaan
+            if ($asset.name -and $asset.url) {
+                if ($expectedFiles -contains $asset.name) {
+                    Write-Host "Downloading $($asset.name) from $($asset.url)..."
+                    try {
+                        Invoke-WebRequest -Uri $asset.url -Headers $downloadHeaders -OutFile $asset.name -UseBasicParsing -ErrorAction Stop
+                        Write-Host "$($asset.name) gedownload."
+                    } catch {
+                        throw "Kon $($asset.name) niet downloaden: $($_.Exception.Message). Controleer of de URL geldig is en rechten correct zijn."
+                    }
+                } else {
+                    Write-Host "Slaat onverwachte asset over: $($asset.name)"
+                }
+            } else {
+                Write-Host "Waarschuwing: Asset object mist 'name' of 'url' eigenschap. Asset details: $($asset | ConvertTo-Json -Depth 3)"
+            }
+        }
+
+        foreach ($file in $expectedFiles) {
+            if (-not (Test-Path $file)) {
+                throw "Fout: Verwacht bestand '$file' is NIET gedownload."
+            }
+        }
+        Write-Host "Alle verwachte assets gedownload."
+      shell: pwsh
+
+    - name: Configure GPG for Verification # Stap 2: Configureer GPG voor verificatie
+      run: |
+        Write-Host "Start GPG configuratie voor verificatie."
+        $publicKeyId = "5E3097F9AF5D0E9B1DB0641FB958339F1229A6EE" # Uw publieke sleutel ID
+
+        # Probeer publieke sleutel op te halen van een keyserver
+        Write-Host "Poging om publieke GPG sleutel te importeren (ID: $publicKeyId)..."
+        try {
+            gpg --keyserver hkps://keys.openpgp.org --recv-keys $publicKeyId
+            if ($LASTEXITCODE -ne 0) {
+                Write-Host "Waarschuwing: Keyserver import mislukt, probeer alternatieve import."
+                # Als keyserver niet werkt, importeert u de sleutel handmatig (pas dit aan als uw sleutel verandert)
+                # $publicKeyContent = "Public-key block" 
+                $publicKeyContent | Out-File -FilePath "release_public_key.asc" -Encoding ascii
+                gpg --import "release_public_key.asc"
+            }
+        } catch {
+            Write-Host "Fout bij keyserver import: $($_.Exception.Message)"
+            # Fallback naar handmatige import
+            #$publicKeyContent = "Public-key block"
+            $publicKeyContent | Out-File -FilePath "release_public_key.asc" -Encoding ascii
+            gpg --import "release_public_key.asc"
+        }
+
+        # Optioneel: Vertrouw de sleutel zodat GPG geen waarschuwingen geeft over onvertrouwde handtekeningen
+        # Alleen nodig als de sleutel nog niet in de trusted store van de runner zit
+        # gpg --batch --yes --edit-key $publicKeyId trust quit
+        Write-Host "GPG configuratie voltooid."
+      shell: pwsh
+
+    - name: Verify GPG Signatures # Stap 3: Verifieer de GPG-handtekeningen van alle gedownloade executables
+      run: |
+        $filesToVerify = @(
+            "Password_entropy_verifier.exe",
+            "vop.exe",
+            "t3.exe"
+        )
+
+        foreach ($file in $filesToVerify) {
+            Write-Host "$file"
+            $signatureFile = "$file.asc"
+            Write-Host "Verifiëren van $file met handtekening $signatureFile..."
+            try {
+                gpg --verify $signatureFile
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Host "Succesvolle GPG verificatie voor $file."
+                } else {
+                    throw "GPG verificatie mislukt voor $file. Exit code: $LASTEXITCODE."
+                }
+            } catch {
+                throw "Fout tijdens GPG verificatie voor ${ $file} : $(${$_.Exception.Message})"
+            }
+        }
+      shell: pwsh
+
+    - name: Test Executables # Stap 4: Voer de gedownloade executables uit en test hun functionaliteit
+      run: |
+        Write-Host "Start functionele tests voor executables..."
+
+        # Test Password_entropy_verifier.exe
+        Write-Host "Testen van Password_entropy_verifier.exe..."
+        $passOutput = & .\\Password_entropy_verifier.exe # Voer zonder argumenten uit
+        # Controleer of de output een verwachte string bevat, of dat het gewoon succesvol draait
+        if ($LASTEXITCODE -ne 0) {
+            throw "Password_entropy_verifier.exe afgesloten met foutcode $LASTEXITCODE. Output: $($passOutput | Out-String)"
+        }
+        Write-Host "Password_entropy_verifier.exe succesvol uitgevoerd (Exit Code 0)."
+
+        # Test vop.exe
+        Write-Host "Testen van vop.exe..."
+        $vopOutput = & .\\vop.exe
+        if ($LASTEXITCODE -ne 0) {
+            throw "vop.exe afgesloten met foutcode $LASTEXITCODE. Output: $($vopOutput | Out-String)"
+        }
+        Write-Host "vop.exe succesvol uitgevoerd (Exit Code 0)."
+
+        # Test t3.exe
+        Write-Host "Testen van t3.exe..."
+        $t3Output = & .\\t3.exe
+        if ($LASTEXITCODE -ne 0) {
+            throw "t3.exe afgesloten met foutcode $LASTEXITCODE. Output: $($t3Output | Out-String)"
+        }
+        Write-Host "t3.exe succesvol uitgevoerd (Exit Code 0)."
+
+        # --- Optioneel: Voeg hier meer specifieke tests toe per executable ---
+        # Bijvoorbeeld voor Password_entropy_verifier.exe met een testwachtwoord
+        $passwordTestOutput = & .\\Password_entropy_verifier.exe "SterkWachtwoord123!" | Out-String
+        #if ($passwordTestOutput -notlike "*Sterkte: Sterk*") {
+        #   throw "Password_entropy_verifier.exe gaf onverwachte output voor testwachtwoord."
+        #}
+        Write-Host: $passwordTestOutput
+
+        Write-Host "Alle executables succesvol geverifieerd en getest!"
+      shell: pwsh
