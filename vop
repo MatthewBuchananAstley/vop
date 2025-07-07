@@ -14,14 +14,6 @@ import logging
 
 class chstr():
 
-    logging.basicConfig(
-        filename='vop_1.log',
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-  
-    )
-
-
     def array_for_shuffle(self):
         a = []
         for i in self:
@@ -34,8 +26,6 @@ class chstr():
         return(''.join(self))
 
     def rspec_char():
-        #a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|']
-        #a = [ '!','@','#','$','%','^','&','*','_','-','+','=','/','?','|',':',';','>','<' ]
         a = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '-', '=', '[', ']', '{', '}', '|', ';', ':', "'", ',', '.', '<', '>', '/', '?', '`', '~'] 
         a1 = secrets.SystemRandom("/dev/urandom")
         return(a[a1.randint(0,len(a) -1 )])
@@ -68,22 +58,16 @@ class chstr():
         a = secrets.SystemRandom("/dev/urandom")
         # Veel random bytes
         a3 = a.randbytes(int(self)*777)
-        #a3 = a.randbytes(int(self)*777).decode('latin1')
         # Maak er een string van
         b = str(a3)
-        #d = str(chstr.replace_non_printables(a3))
-        # Base64 encode zonder rare karakters
+        # Base64 encode
         d = base64.urlsafe_b64encode(bytes(b, encoding='UTF-8')).decode()
-        #logging.info("len b64 pw: " + str(len(d)))
         # Een random int om een willekeurige startpuntindex binnen de string d te hebben
         d4 = a.randint(0,((len(d)-1) - int(self)))
-        #logging.info("Pw startindex: " + str(d4))
         # De eindindex van de passwordstring 
         d5 = d4 + int(self)
-        #logging.info("Eindindex: " + str(d5))
         #d1 = str(d[d4:d5]).lstrip('\'b').rstrip('\'')  # Dit was het probleem van het verdwijnende karakter :|. Ok so this strips a regular b from the string. Use bytes.decode()
         d1 = str(d[d4:d5])
-        #logging.info("Pw selectie: " + str(d1))
 
         return(d1)
 
