@@ -2,7 +2,7 @@
 #
 # Checker to check quantum safety of passwords, using shannon entropy check
 # SPDX-License-Identifier: Apache-2.0
-# 2025 Code compiled by ChatGPT, quantum safety check added by Matthew Buchanan Astley (matthewbuchanan@astley.nl, mbastley@gmail.com)
+# 2025 Code compiled by ChatGPT, quantum safety check added by Matthew Buchanan Astley (matthewbuchanan@astley.nl, mbastley@gmail.com, linux@astley.nl)
 # 
 
 import sys
