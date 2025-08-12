@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - name: Checkout repository # Nodig om de GPG verificatie instructies/sleutel te kunnen benaderen, of andere test scripts
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
   
     - name: Download Release Assets # AANGEPASTE STAP
